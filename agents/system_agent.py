@@ -35,7 +35,10 @@ class SystemAgent:
                         continue
 
                     # Emit alert (handles cooldown + formatting)
-                    self.logger.emit(event, detection)
+                    result=self.logger.emit(event, detection)
+                    if result is not None:
+                        # this already contains ML + aggregation output
+                        pass  # (next step: send to analysis agent)
 
         except KeyboardInterrupt:
             return

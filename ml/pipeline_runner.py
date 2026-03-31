@@ -15,7 +15,7 @@ class Pipeline:
         self.router = ModelRouter()
         self.aggregator = StreamingAggregator(threshold=1.5, decay=0.9)
 
-        print("✅ Pipeline Initialized")
+        print("Pipeline Initialized")
 
     def process_event(self, event):
 
@@ -35,7 +35,7 @@ class Pipeline:
 
         # -------- Step 3: Threshold Check --------
         if agg_result["alert"]:
-            print("\n🚨 ALERT TRIGGERED 🚨")
+            print("\n ALERT TRIGGERED")
             print(agg_result["data"])
 
         return agg_result

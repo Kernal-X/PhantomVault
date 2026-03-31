@@ -117,6 +117,7 @@ class FileModel:
                     "iso_prob": round(iso_prob, 4),
                     "reason": reason,
                     "rule_reasons": reasons
+                    
                 }
             }
         }

@@ -75,6 +75,7 @@ class NetworkModel:
         # RULE
         rule_score, reasons = self.compute_rule_score(event)
 
+
         # -------- EXACT HYBRID --------
         hybrid_score = (
             0.45 * rule_score +
