@@ -79,6 +79,7 @@ def set_file(path: str, data: dict, metadata: Optional[dict] = None):
     cache_path = _cache_file_path(path, metadata)
 
     payload = {
+        "path": path,
         "content": data.get("content", ""),
         "schema": data.get("schema", []),
         "metadata": _normalize_metadata(data.get("metadata", metadata or {})),
@@ -130,6 +131,9 @@ def clear_cache_for_path(path: str | None):
     if not os.path.exists(CACHE_DIR):
         return
 
+    if not path:
+        return
+
     for file_name in os.listdir(CACHE_DIR):
         file_path = os.path.join(CACHE_DIR, file_name)
 
@@ -140,10 +144,8 @@ def clear_cache_for_path(path: str | None):
             with open(file_path, "r", encoding="utf-8") as f:
                 payload = json.load(f)
 
-            if payload.get("metadata") is not None:
-                # path itself isn't stored in file currently, so this only
-                # works for future extension unless you store path in payload
-                pass
+            if payload.get("path") == path:
+                os.remove(file_path)
 
         except Exception:
             continue

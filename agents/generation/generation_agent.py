@@ -72,6 +72,15 @@ class GenerationAgent:
 
         return f"{path}::v2::{digest}"
 
+    def _write_generated_content(self, path, content):
+        try:
+            real_path = resolve_path(path)
+            os.makedirs(os.path.dirname(real_path), exist_ok=True)
+            with open(real_path, "w", encoding="utf-8") as f:
+                f.write(content)
+        except Exception as e:
+            print("[WRITE ERROR]", e)
+
     # -----------------------------------
     # MAIN GENERATION ENTRY
     # -----------------------------------
@@ -127,23 +136,12 @@ class GenerationAgent:
             # 5. Apply realism enhancement
             content = apply_realism(content, metadata)
 
-            # 🔥 Persist generated content into decoy filesystem
-            try:
-                real_path = resolve_path(path)
-
-                os.makedirs(os.path.dirname(real_path), exist_ok=True)
-
-                with open(real_path, "w", encoding="utf-8") as f:
-                    f.write(content)
-
-            except Exception as e:
-                print("[WRITE ERROR]", e)
-
             # 6. Validate final output
             is_valid, reason = validate(content, metadata, schema)
 
             if not is_valid:
                 fallback_content = self._fallback_content(path, metadata, schema)
+                self._write_generated_content(path, fallback_content)
                 
                 # Cache the fallback so we don't re-run failed generation
                 set_file(path, {
@@ -162,6 +160,7 @@ class GenerationAgent:
                 }
 
             # 7. CACHE SUCCESSFUL GENERATION
+            self._write_generated_content(path, content)
             set_file(path, {
                 "content": content,
                 "schema": schema,

@@ -7,6 +7,7 @@ Called from SystemAgent for every event after collection; does not change detect
 from __future__ import annotations
 
 import ipaddress
+import math
 import os
 import statistics
 import time
@@ -135,6 +136,17 @@ class EventEnricher:
             return 0.0
         return (x - m) / s
 
+    def _cmd_entropy(self, cmdline: str) -> float:
+        if not cmdline:
+            return 0.0
+        counts = Counter(cmdline)
+        total = float(len(cmdline))
+        entropy = 0.0
+        for count in counts.values():
+            probability = count / total
+            entropy -= probability * math.log2(probability)
+        return entropy
+
     def _is_known_binary_path(self, exe: Optional[str]) -> int:
         if not exe:
             return 0
@@ -202,6 +214,7 @@ class EventEnricher:
         pname = str(data.get("process_name") or "unknown").strip() or "unknown"
         cpu = float(data.get("cpu_percent") or 0.0)
         mem = float(data.get("memory_mb") or 0.0)
+        cmdline = str(data.get("cmdline") or "")
 
         if pid and not data.get("exe_path"):
             try:
@@ -236,6 +249,7 @@ class EventEnricher:
 
         exe = data.get("exe_path")
         data["is_known_binary"] = self._is_known_binary_path(exe if isinstance(exe, str) else None)
+        data["cmd_entropy"] = round(self._cmd_entropy(cmdline), 6)
 
         # Network-related fields N/A
         data.setdefault("connection_freq_1min", 0)
@@ -298,6 +312,7 @@ class EventEnricher:
             data.setdefault("parent_child_rarity", 0.0)
             data.setdefault("process_freq_5min", 0)
             data.setdefault("is_known_binary", 0)
+        data.setdefault("cmd_entropy", 0.0)
 
         if rip:
             self._net_events.append((now, rip, rport, pid))
@@ -360,6 +375,7 @@ class EventEnricher:
             except Exception:
                 pass
         data["is_known_binary"] = self._is_known_binary_path(data.get("exe_path") if isinstance(data.get("exe_path"), str) else None)
+        data.setdefault("cmd_entropy", 0.0)
 
         data.setdefault("connection_freq_1min", 0)
         data.setdefault("unique_ip_5min", 0)

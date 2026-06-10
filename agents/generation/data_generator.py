@@ -6,8 +6,6 @@ import io
 import csv
 import string
 
-print("DEBUG FILE LOADED:", __file__)
-
 # ----------------------------
 # GLOBAL DATA (fallback values)
 # ----------------------------
@@ -90,7 +88,7 @@ def load_global_context():
         }
 
     try:
-        with open(GLOBAL_CONTEXT_PATH, "r") as f:
+        with open(GLOBAL_CONTEXT_PATH, "r", encoding="utf-8") as f:
             data = json.load(f)
 
         return {
@@ -646,15 +644,12 @@ def generate_csv(schema, metadata):
 # ----------------------------
 
 def generate_json(schema, metadata):
-    print("DEBUG: NEW generate_json IS RUNNING")
     context = load_global_context()
     schema = maybe_enrich_schema(schema, metadata)
 
     size_bytes = parse_size_to_bytes(metadata.get("size", "25kb"))
     row_count = estimate_row_count(size_bytes, "json", len(schema))
     employee_pool = build_employee_pool(row_count, context)
-
-    print("DEBUG FIRST PERSON:", employee_pool[0])
 
     data = []
 
@@ -663,8 +658,6 @@ def generate_json(schema, metadata):
         for col in schema:
             item[col] = generate_field_value(col, person, i, metadata, context)
         data.append(item)
-
-    print("DEBUG FIRST JSON ITEM:", data[0])
 
     return json.dumps(data, indent=4)
 # ----------------------------
@@ -728,7 +721,6 @@ def generate_credentials(metadata):
 # ----------------------------
 
 def generate_logs(metadata):
-    print("🔥 REAL generate_logs EXECUTED")
     context = load_global_context()
     size_bytes = parse_size_to_bytes(metadata.get("size", "15kb"))
     row_count = min(5000, estimate_row_count(size_bytes, "log", 4))
