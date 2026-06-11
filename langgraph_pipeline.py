@@ -10,7 +10,6 @@ from agents.deployment.deployment_agent import DeploymentManager
 from agents.event_enrichment import EventEnricher
 from agents.generation.generation_agent import GenerationAgent
 from agents.strategy.strategy_agent import strategy_agent
-from core.interception_layer import InterceptionLayer
 from core.monitor import Monitor
 from detectors.scoring import ScoringDetector
 from logs.logger import SOCLogger
@@ -52,7 +51,6 @@ class LangGraphSecurityPipeline:
         self.enricher = enricher or EventEnricher()
         self.deployment_manager = deployment_manager or DeploymentManager()
         self.generation_agent = generation_agent or GenerationAgent()
-        self.interception_layer = InterceptionLayer(generation_agent=self.generation_agent)
         self.app = self._build_graph()
 
     def _build_graph(self):
@@ -67,7 +65,6 @@ class LangGraphSecurityPipeline:
         graph.add_node("analysis", self.run_analysis)
         graph.add_node("strategy", self.run_strategy)
         graph.add_node("deployment", self.run_deployment)
-        graph.add_node("interception", self.run_interception)
 
         graph.add_edge(START, "prepare_state")
         graph.add_conditional_edges(
@@ -78,7 +75,6 @@ class LangGraphSecurityPipeline:
                 "analysis": "analysis",
                 "strategy": "strategy",
                 "deployment": "deployment",
-                "interception": "interception",
                 "end": END,
             },
         )
@@ -105,15 +101,7 @@ class LangGraphSecurityPipeline:
                 "end": END,
             },
         )
-        graph.add_conditional_edges(
-            "deployment",
-            self.route_after_deployment,
-            {
-                "interception": "interception",
-                "end": END,
-            },
-        )
-        graph.add_edge("interception", END)
+        graph.add_edge("deployment", END)
 
         return graph.compile()
 
@@ -137,7 +125,7 @@ class LangGraphSecurityPipeline:
             return "collect_events"
 
         if state.get("deployment"):
-            return "interception"
+            return "end"
         if state.get("strategy"):
             return "deployment"
         if state.get("analysis"):
@@ -258,25 +246,6 @@ class LangGraphSecurityPipeline:
     def run_deployment(self, state: SecuritySystemState) -> SecuritySystemState:
         deployment = self.deployment_manager.deploy(state.get("strategy", {}))
         state["deployment"] = deployment
-        return state
-
-    def route_after_deployment(self, state: SecuritySystemState) -> str:
-        return "interception" if state.get("request_path") else "end"
-
-    def run_interception(self, state: SecuritySystemState) -> SecuritySystemState:
-        request_path = state.get("request_path")
-        if not request_path:
-            state["errors"] = [*state.get("errors", []), "Missing request_path for interception"]
-            return state
-
-        result = self.interception_layer.handle(
-            {
-                "path": request_path,
-                "analysis": state.get("analysis", {}),
-                "deployment": state.get("deployment", {}),
-            }
-        )
-        state["interception_result"] = result
         return state
 
     def run_monitor_cycle(self, state: SecuritySystemState | None = None) -> SecuritySystemState:
