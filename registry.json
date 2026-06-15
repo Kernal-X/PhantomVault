@@ -9,5 +9,60 @@
     "size": "250KB",
     "sensitivity": "high",
     "real_os_path": "C:\\shared\\finance_test\\payroll.csv"
+  },
+  "/ProgramData/DeceptionLab/staging/finance_decoys/M_Drive_Export_3064F7.csv": {
+    "file_type": "csv",
+    "columns": [],
+    "content_type": "csv_generic_honeypot_documents_summary",
+    "realism": "medium",
+    "realism_level": "medium",
+    "use_llm_realism": false,
+    "size": "250KB",
+    "sensitivity": "high",
+    "real_os_path": "C:\\ProgramData\\DeceptionLab\\staging\\finance_decoys\\M_Drive_Export_3064F7.csv"
+  },
+  "/ProgramData/DeceptionLab/staging/finance_decoys/M_Drive_Export_032D56.csv": {
+    "file_type": "csv",
+    "columns": [],
+    "content_type": "csv_generic_honeypot_documents_summary",
+    "realism": "medium",
+    "realism_level": "medium",
+    "use_llm_realism": false,
+    "size": "250KB",
+    "sensitivity": "high",
+    "real_os_path": "C:\\ProgramData\\DeceptionLab\\staging\\finance_decoys\\M_Drive_Export_032D56.csv"
+  },
+  "/ProgramData/DeceptionLab/staging/Payroll_Export_Q3_DECOY.csv": {
+    "file_type": "csv",
+    "columns": [],
+    "content_type": "csv_financial_summary",
+    "realism": "medium",
+    "realism_level": "medium",
+    "use_llm_realism": false,
+    "size": "50KB",
+    "sensitivity": "medium",
+    "real_os_path": "C:\\ProgramData\\DeceptionLab\\staging\\Payroll_Export_Q3_DECOY.csv"
+  },
+  "/ProgramData/DeceptionLab/staging/Employee_Records_DECOY.json": {
+    "file_type": "json",
+    "columns": [],
+    "content_type": "json_employee_data",
+    "realism": "medium",
+    "realism_level": "medium",
+    "use_llm_realism": false,
+    "size": "50KB",
+    "sensitivity": "medium",
+    "real_os_path": "C:\\ProgramData\\DeceptionLab\\staging\\Employee_Records_DECOY.json"
+  },
+  "/ProgramData/DeceptionLab/staging/User_Activity_Log_DECOY.txt": {
+    "file_type": "txt",
+    "columns": [],
+    "content_type": "text_user_activity",
+    "realism": "medium",
+    "realism_level": "medium",
+    "use_llm_realism": false,
+    "size": "50KB",
+    "sensitivity": "medium",
+    "real_os_path": "C:\\ProgramData\\DeceptionLab\\staging\\User_Activity_Log_DECOY.txt"
   }
 }

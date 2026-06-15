@@ -1,0 +1,826 @@
+{
+  "generatedAt": "2026-06-15T18:32:40.498Z",
+  "repoRoot": "E:\\agentic_ai\\defense system",
+  "counts": {
+    "files": 153,
+    "directories": 45,
+    "tests": 8,
+    "pythonFiles": 100
+  },
+  "topLevel": [
+    {
+      "name": "agents",
+      "files": 32
+    },
+    {
+      "name": "ml",
+      "files": 26
+    },
+    {
+      "name": "src",
+      "files": 14
+    },
+    {
+      "name": "frontend",
+      "files": 10
+    },
+    {
+      "name": "tests",
+      "files": 8
+    },
+    {
+      "name": "core",
+      "files": 6
+    },
+    {
+      "name": "data",
+      "files": 6
+    },
+    {
+      "name": ".uv-cache",
+      "files": 4
+    },
+    {
+      "name": "collectors",
+      "files": 3
+    },
+    {
+      "name": "configs",
+      "files": 3
+    },
+    {
+      "name": "utils",
+      "files": 3
+    },
+    {
+      "name": "config",
+      "files": 2
+    },
+    {
+      "name": "demo_shared",
+      "files": 2
+    },
+    {
+      "name": "detectors",
+      "files": 2
+    },
+    {
+      "name": "notebooks",
+      "files": 2
+    },
+    {
+      "name": ".env",
+      "files": 1
+    },
+    {
+      "name": ".env.example",
+      "files": 1
+    },
+    {
+      "name": ".gitignore",
+      "files": 1
+    },
+    {
+      "name": "dashboard_server.py",
+      "files": 1
+    },
+    {
+      "name": "debug_2_stratergy.py",
+      "files": 1
+    },
+    {
+      "name": "debug_stratergy_agent.py",
+      "files": 1
+    },
+    {
+      "name": "generate_system_deep_dive_pdf.ps1",
+      "files": 1
+    },
+    {
+      "name": "langgraph_pipeline.py",
+      "files": 1
+    },
+    {
+      "name": "langgraph_workflow.mmd",
+      "files": 1
+    },
+    {
+      "name": "logs",
+      "files": 1
+    },
+    {
+      "name": "main.py",
+      "files": 1
+    },
+    {
+      "name": "mermaid_visual.py",
+      "files": 1
+    },
+    {
+      "name": "package-lock.json",
+      "files": 1
+    },
+    {
+      "name": "presentation_demo.py",
+      "files": 1
+    },
+    {
+      "name": "presentation_demo_file_attack.py",
+      "files": 1
+    },
+    {
+      "name": "presentation_demo_file_attack_ransomware.py",
+      "files": 1
+    },
+    {
+      "name": "pyproject.toml",
+      "files": 1
+    },
+    {
+      "name": "README.md",
+      "files": 1
+    },
+    {
+      "name": "registry.json",
+      "files": 1
+    },
+    {
+      "name": "requirements.txt",
+      "files": 1
+    },
+    {
+      "name": "responders",
+      "files": 1
+    },
+    {
+      "name": "run_all_checks.ps1",
+      "files": 1
+    },
+    {
+      "name": "state_schema.py",
+      "files": 1
+    },
+    {
+      "name": "system_analysis.md",
+      "files": 1
+    },
+    {
+      "name": "system_deep_dive.html",
+      "files": 1
+    },
+    {
+      "name": "system_deep_dive.pdf",
+      "files": 1
+    },
+    {
+      "name": "test_swap.py",
+      "files": 1
+    },
+    {
+      "name": "uv.lock",
+      "files": 1
+    },
+    {
+      "name": "vault_transactions.json",
+      "files": 1
+    },
+    {
+      "name": "visual_flows.svg",
+      "files": 1
+    }
+  ],
+  "workflow": {
+    "nodes": [
+      "prepare_state",
+      "collect_events",
+      "enrich_events",
+      "filter_events",
+      "score_events",
+      "emit_alerts",
+      "analysis",
+      "strategy",
+      "deployment",
+      "interception"
+    ],
+    "edges": [
+      "START, prepare_state",
+      "collect_events, enrich_events",
+      "enrich_events, filter_events",
+      "filter_events, score_events",
+      "score_events, emit_alerts",
+      "analysis, strategy",
+      "interception, END"
+    ],
+    "conditionals": [
+      "prepare_state",
+      "emit_alerts",
+      "strategy",
+      "deployment"
+    ]
+  },
+  "config": {
+    "version": "1.0.0",
+    "environment": "development",
+    "pollInterval": "1",
+    "watchPaths": [
+      "${USERPROFILE}\\Documents",
+      "${USERPROFILE}\\Desktop",
+      ".\\demo_shared"
+    ],
+    "raw": "# System Configuration\r\n# General system settings\r\n\r\nsystem:\r\n  name: Agentic Security System\r\n  version: 1.0.0\r\n  environment: development\r\n\r\nlogging:\r\n  level: INFO\r\n  format: json\r\n  output: console\r\n\r\ninference:\r\n  batch_size: 32\r\n  timeout: 30\r\n  retry_attempts: 3\r\n\r\nstorage:\r\n  data_dir: ./data\r\n  model_dir: ./models\r\n  log_dir: ./logs\r\n\r\nmonitoring:\r\n  poll_interval: 1\r\n  recursive: true\r\n  console_reporting: true\r\n  file_watch_paths:\r\n    - ${USERPROFILE}\\Documents\r\n    - ${USERPROFILE}\\Desktop\r\n    - .\\demo_shared\r\n",
+    "thresholds": "# Threshold Configuration\r\n# Decision thresholds for anomaly detection\r\n\r\nanomaly_thresholds:\r\n  process:\r\n    low: 0.3\r\n    medium: 0.6\r\n    high: 0.8\r\n  \r\n  file:\r\n    low: 0.3\r\n    medium: 0.6\r\n    high: 0.8\r\n  \r\n  network:\r\n    low: 0.3\r\n    medium: 0.6\r\n    high: 0.8\r\n\r\nensemble_threshold: 0.5\r\nalert_threshold: 0.7\r\n",
+    "modelConfig": "# Model Configuration\r\n# Settings for training and inference models\r\n\r\nprocess_model:\r\n  isolation_forest:\r\n    contamination: 0.1\r\n    n_estimators: 100\r\n  xgboost:\r\n    max_depth: 6\r\n    learning_rate: 0.1\r\n    n_estimators: 100\r\n\r\nfile_model:\r\n  catboost:\r\n    max_depth: 6\r\n    learning_rate: 0.1\r\n    iterations: 100\r\n\r\nnetwork_model:\r\n  isolation_forest:\r\n    contamination: 0.1\r\n    n_estimators: 100\r\n  xgboost:\r\n    max_depth: 6\r\n    learning_rate: 0.1\r\n    n_estimators: 100\r\n\r\naggregator_model:\r\n  xgboost:\r\n    max_depth: 6\r\n    learning_rate: 0.1\r\n    n_estimators: 100\r\n"
+  },
+  "modules": [
+    {
+      "path": "main.py",
+      "exists": true,
+      "size": 760,
+      "modified": "2026-06-10T11:05:35.266Z",
+      "lines": 37,
+      "imports": [
+        "yaml",
+        "agents.system_agent",
+        "agents.system_agent"
+      ],
+      "classes": [],
+      "functions": [
+        "load_config",
+        "main",
+        "run"
+      ],
+      "excerpt": "\"\"\"\nMain Entry Point\nAgentic Security System\n\"\"\"\nimport yaml\nfrom agents.system_agent import SystemAgent\ndef load_config(config_file):\n    \"\"\"Load configuration from YAML file\"\"\""
+    },
+    {
+      "path": "dashboard_server.py",
+      "exists": true,
+      "size": 13798,
+      "modified": "2026-06-15T18:18:01.707Z",
+      "lines": 366,
+      "imports": [
+        "__future__",
+        "json",
+        "mimetypes",
+        "os",
+        "time",
+        "datetime",
+        "http.server",
+        "pathlib",
+        "typing",
+        "urllib.parse",
+        "yaml",
+        "dotenv",
+        "langgraph_pipeline"
+      ],
+      "classes": [
+        "DashboardRuntime",
+        "DashboardHandler"
+      ],
+      "functions": [
+        "utc_now",
+        "safe_float",
+        "safe_int",
+        "load_yaml",
+        "load_registry",
+        "summarize_event",
+        "summarize_detection",
+        "run_server"
+      ],
+      "excerpt": "from __future__ import annotations\nimport json\nimport mimetypes\nimport os\nimport time\nfrom datetime import datetime, timezone\nfrom http.server import BaseHTTPRequestHandler, ThreadingHTTPServer\nfrom pathlib import Path"
+    },
+    {
+      "path": "agents/system_agent.py",
+      "exists": true,
+      "size": 6539,
+      "modified": "2026-06-10T11:05:35.245Z",
+      "lines": 160,
+      "imports": [
+        "time",
+        "langgraph_pipeline"
+      ],
+      "classes": [
+        "SystemAgent"
+      ],
+      "functions": [],
+      "excerpt": "import time\nfrom langgraph_pipeline import LangGraphSecurityPipeline\nclass SystemAgent:\n    def __init__(self, config=None):\n        import yaml\n        from detectors.scoring import ScoringDetector\n        self.config = config or {}\n        monitoring = self.config.get(\"monitoring\", {})"
+    },
+    {
+      "path": "langgraph_pipeline.py",
+      "exists": true,
+      "size": 11454,
+      "modified": "2026-06-10T11:05:35.266Z",
+      "lines": 295,
+      "imports": [
+        "__future__",
+        "copy",
+        "typing",
+        "langgraph.graph",
+        "agents.analysis.analysis_agent",
+        "agents.deployment.deployment_agent",
+        "agents.event_enrichment",
+        "agents.generation.generation_agent",
+        "agents.strategy.strategy_agent",
+        "core.interception_layer",
+        "core.monitor",
+        "detectors.scoring",
+        "logs.logger",
+        "state_schema",
+        "utils.filters"
+      ],
+      "classes": [
+        "LangGraphSecurityPipeline"
+      ],
+      "functions": [
+        "_copy_events",
+        "build_security_workflow"
+      ],
+      "excerpt": "from __future__ import annotations\nimport copy\nfrom typing import Any, Dict, List\nfrom langgraph.graph import END, START, StateGraph\nfrom agents.analysis.analysis_agent import analysis_agent\nfrom agents.deployment.deployment_agent import DeploymentManager\nfrom agents.event_enrichment import EventEnricher\nfrom agents.generation.generation_agent import GenerationAgent"
+    },
+    {
+      "path": "state_schema.py",
+      "exists": true,
+      "size": 894,
+      "modified": "2026-06-10T11:05:35.363Z",
+      "lines": 31,
+      "imports": [
+        "__future__",
+        "typing"
+      ],
+      "classes": [
+        "DetectionRecord",
+        "SecuritySystemState"
+      ],
+      "functions": [],
+      "excerpt": "from __future__ import annotations\nfrom typing import Any, Dict, List, Literal, TypedDict\nclass DetectionRecord(TypedDict, total=False):\n    event: Dict[str, Any]\n    detection: Dict[str, Any]\n    accepted: bool\nclass SecuritySystemState(TypedDict, total=False):\n    mode: Literal[\"monitor\", \"intercept\"]"
+    },
+    {
+      "path": "core/monitor.py",
+      "exists": true,
+      "size": 868,
+      "modified": "2026-06-10T11:05:35.253Z",
+      "lines": 27,
+      "imports": [
+        "collectors.process_collector",
+        "collectors.file_collector",
+        "collectors.network_collector"
+      ],
+      "classes": [
+        "Monitor"
+      ],
+      "functions": [],
+      "excerpt": "# core/monitor.py\nfrom collectors.process_collector import ProcessCollector\nfrom collectors.file_collector import FileCollector\nfrom collectors.network_collector import NetworkCollector\nclass Monitor:\n    def __init__(self, interval=1, file_watch_paths=None, file_watch_recursive=True):\n        self.process_collector = ProcessCollector(interval=interval)\n        self.file_collector = FileCollector(path=file_watch_paths or \".\", recursive=file_watch_recursive)"
+    },
+    {
+      "path": "collectors/process_collector.py",
+      "exists": true,
+      "size": 3267,
+      "modified": "2026-06-10T11:05:35.245Z",
+      "lines": 84,
+      "imports": [
+        "time",
+        "typing",
+        "psutil"
+      ],
+      "classes": [
+        "ProcessCollector"
+      ],
+      "functions": [],
+      "excerpt": "import time\nfrom typing import Dict, List, Optional\nimport psutil\nclass ProcessCollector:\n    def __init__(self, interval: float = 1.0):\n        self.interval = interval\n        self._seen_pids = set()\n    def _prime_cpu_counters(self) -> None:"
+    },
+    {
+      "path": "collectors/file_collector.py",
+      "exists": true,
+      "size": 3124,
+      "modified": "2026-06-10T11:05:35.245Z",
+      "lines": 99,
+      "imports": [
+        "os",
+        "time",
+        "threading",
+        "typing",
+        "watchdog.events",
+        "watchdog.observers"
+      ],
+      "classes": [
+        "_BufferedFileEventHandler",
+        "FileCollector"
+      ],
+      "functions": [],
+      "excerpt": "import os\nimport time\nimport threading\nfrom typing import Dict, Iterable, List\nfrom watchdog.events import FileSystemEventHandler\nfrom watchdog.observers import Observer\nclass _BufferedFileEventHandler(FileSystemEventHandler):\n    def __init__(self, collector: \"FileCollector\"):"
+    },
+    {
+      "path": "collectors/network_collector.py",
+      "exists": true,
+      "size": 1737,
+      "modified": "2026-06-10T11:05:35.245Z",
+      "lines": 54,
+      "imports": [
+        "time",
+        "typing",
+        "psutil"
+      ],
+      "classes": [
+        "NetworkCollector"
+      ],
+      "functions": [],
+      "excerpt": "import time\nfrom typing import Dict, List\nimport psutil\nclass NetworkCollector:\n    def collect(self) -> List[Dict]:\n        events: List[Dict] = []\n        now = time.time()\n        try:"
+    },
+    {
+      "path": "agents/event_enrichment.py",
+      "exists": true,
+      "size": 14791,
+      "modified": "2026-06-10T11:05:35.235Z",
+      "lines": 371,
+      "imports": [
+        "__future__",
+        "ipaddress",
+        "os",
+        "statistics",
+        "time",
+        "collections",
+        "typing",
+        "psutil"
+      ],
+      "classes": [
+        "EventEnricher"
+      ],
+      "functions": [
+        "_norm_path",
+        "_port_risk",
+        "_is_known_ip_value",
+        "_is_private_ip_value"
+      ],
+      "excerpt": "\"\"\"\nPopulate ML feature fields on monitor events using psutil and lightweight history.\nCalled from SystemAgent for every event after collection; does not change detection logic.\n\"\"\"\nfrom __future__ import annotations\nimport ipaddress\nimport os\nimport statistics"
+    },
+    {
+      "path": "utils/filters.py",
+      "exists": true,
+      "size": 2975,
+      "modified": "2026-06-10T11:05:35.363Z",
+      "lines": 86,
+      "imports": [
+        "typing",
+        "ipaddress"
+      ],
+      "classes": [
+        "EventFilter"
+      ],
+      "functions": [],
+      "excerpt": "from typing import Dict, Set\nimport ipaddress\nclass EventFilter:\n    def __init__(self):\n        self._ignored_pids: Set[int] = {0}\n        self._ignored_names = {\"system idle process\", \"system\", \"registry\"}\n        self._trusted_processes = {\n            \"msedge.exe\","
+    },
+    {
+      "path": "detectors/scoring.py",
+      "exists": true,
+      "size": 10652,
+      "modified": "2026-06-10T11:05:35.266Z",
+      "lines": 279,
+      "imports": [
+        "re",
+        "time",
+        "ipaddress",
+        "collections",
+        "typing"
+      ],
+      "classes": [
+        "ScoringDetector"
+      ],
+      "functions": [],
+      "excerpt": "import re\nimport time\nimport ipaddress\nfrom collections import deque\nfrom typing import Dict, List\nclass ScoringDetector:\n    def __init__(self, alert_threshold: int = 4, suspicious_threshold: int = 3):\n        self.alert_threshold = alert_threshold"
+    },
+    {
+      "path": "logs/logger.py",
+      "exists": true,
+      "size": 12138,
+      "modified": "2026-06-10T11:05:35.266Z",
+      "lines": 333,
+      "imports": [
+        "time",
+        "typing",
+        "ml.ml_models.aggregator_model.aggregator",
+        "ml.ml_models.aggregator_model.router"
+      ],
+      "classes": [
+        "SOCLogger"
+      ],
+      "functions": [],
+      "excerpt": "﻿import json\nimport time\nfrom typing import Any, Dict, Optional, Tuple\nfrom ml.ml_models.aggregator_model.aggregator import StreamingAggregator\nfrom ml.ml_models.aggregator_model.router import ModelRouter\nclass SOCLogger:\n    def __init__(self, rate_limit_seconds: int = 30, ml_threshold: float = 1.5, ml_decay: float = 0.9):\n        self.rate_limit_seconds = rate_limit_seconds"
+    },
+    {
+      "path": "ml/ml_models/aggregator_model/router.py",
+      "exists": true,
+      "size": 1670,
+      "modified": "2026-06-10T11:05:35.278Z",
+      "lines": 49,
+      "imports": [
+        "__future__",
+        "pathlib",
+        "ml.ml_models.file_model.file_model",
+        "ml.ml_models.network_model.network_model",
+        "ml.ml_models.process_model.process_model"
+      ],
+      "classes": [
+        "ModelRouter"
+      ],
+      "functions": [],
+      "excerpt": "from __future__ import annotations\nfrom pathlib import Path\nfrom ml.ml_models.file_model.file_model import FileModel\nfrom ml.ml_models.network_model.network_model import NetworkModel\nfrom ml.ml_models.process_model.process_model import ProcessModel\nclass ModelRouter:\n    def __init__(self):\n        base_dir = Path(__file__).resolve().parent.parent"
+    },
+    {
+      "path": "ml/ml_models/aggregator_model/aggregator.py",
+      "exists": true,
+      "size": 2275,
+      "modified": "2026-06-10T11:05:35.278Z",
+      "lines": 87,
+      "imports": [
+        "time",
+        "copy"
+      ],
+      "classes": [
+        "StreamingAggregator"
+      ],
+      "functions": [],
+      "excerpt": "import time\nimport copy\nclass StreamingAggregator:\n    def __init__(self, threshold=1.5, decay=0.9,max_events=100):\n        self.threshold = threshold\n        self.decay = decay\n        self.max_events = max_events\n        self.aggregator_score = 0.0"
+    },
+    {
+      "path": "agents/analysis/analysis_agent.py",
+      "exists": true,
+      "size": 643,
+      "modified": "2026-06-10T11:05:35.218Z",
+      "lines": 26,
+      "imports": [
+        ".formatter",
+        ".prompt_builder",
+        ".parser",
+        ".validator",
+        "utils.llm_client"
+      ],
+      "classes": [],
+      "functions": [
+        "analysis_agent"
+      ],
+      "excerpt": "from .formatter import format_events\nfrom .prompt_builder import build_prompt\nfrom .parser import parse_response,normalize_output\nfrom .validator import sanitize_output\nfrom utils.llm_client import call_llm\ndef analysis_agent(state):\n    risk_score = state.get(\"risk_score\", 0)\n    events = state.get(\"events\", [])"
+    },
+    {
+      "path": "agents/strategy/strategy_agent.py",
+      "exists": true,
+      "size": 3667,
+      "modified": "2026-06-10T11:05:35.245Z",
+      "lines": 90,
+      "imports": [
+        "__future__",
+        "os",
+        "typing",
+        "utils.llm_client",
+        ".parser",
+        ".prompt_builder",
+        ".schema",
+        ".validator"
+      ],
+      "classes": [],
+      "functions": [
+        "_staging_root",
+        "strategy_agent"
+      ],
+      "excerpt": "\"\"\"\nStrategy Agent — translates Analysis output into an executable deception strategy.\n\"\"\"\nfrom __future__ import annotations\nimport os\nfrom typing import Any, Dict\nfrom utils.llm_client import call_openai_strategy_llm\nfrom .parser import parse_strategy_response"
+    },
+    {
+      "path": "agents/deployment/deployment_agent.py",
+      "exists": true,
+      "size": 11172,
+      "modified": "2026-06-10T11:05:35.218Z",
+      "lines": 302,
+      "imports": [
+        "os",
+        "json",
+        "agents.deployment.decoy_registry",
+        "agents.deployment.context_builder",
+        "agents.deployment.rule_engine",
+        "core.path_resolver"
+      ],
+      "classes": [
+        "DeploymentManager"
+      ],
+      "functions": [],
+      "excerpt": "# agents/deployment/deployment_agent.py\nimport os\nimport json\nfrom agents.deployment.decoy_registry import DecoyRegistry\nfrom agents.deployment.context_builder import build_global_context\nfrom agents.deployment.rule_engine import build_interception_rules\nfrom core.path_resolver import normalize_path, resolve_path\nclass DeploymentManager:"
+    },
+    {
+      "path": "agents/generation/generation_agent.py",
+      "exists": true,
+      "size": 17954,
+      "modified": "2026-06-10T11:05:35.235Z",
+      "lines": 483,
+      "imports": [
+        "os",
+        "json",
+        "hashlib",
+        ".cache",
+        ".schema_resolver",
+        ".data_generator",
+        ".consistency_engine",
+        ".realism_enhancer",
+        ".validators",
+        "core.path_resolver"
+      ],
+      "classes": [
+        "GenerationAgent"
+      ],
+      "functions": [
+        "generate"
+      ],
+      "excerpt": "import os\nimport json\nimport hashlib\nfrom .cache import get_file, set_file\nfrom .schema_resolver import resolve\nfrom .data_generator import generate as generate_base_data\nfrom .consistency_engine import apply as apply_consistency\nfrom .realism_enhancer import apply as apply_realism"
+    },
+    {
+      "path": "core/interception_layer.py",
+      "exists": true,
+      "size": 5924,
+      "modified": "2026-06-10T11:05:35.253Z",
+      "lines": 183,
+      "imports": [
+        "core.decision_engine",
+        "core.path_resolver",
+        "os"
+      ],
+      "classes": [
+        "InterceptionLayer"
+      ],
+      "functions": [],
+      "excerpt": "# core/interception_layer.py\nfrom core.decision_engine import decide_action\nfrom core.path_resolver import normalize_path, resolve_path\nimport os\nclass InterceptionLayer:\n    def __init__(self, generation_agent=None):\n        self.generation_agent = generation_agent\n        self.SUPPORTED_TYPES = [\"csv\", \"txt\", \"log\", \"json\", \"env\",\"sql\"]"
+    },
+    {
+      "path": "registry.json",
+      "exists": true,
+      "size": 1218,
+      "modified": "2026-06-15T18:13:21.143Z",
+      "lines": 35
+    },
+    {
+      "path": "configs/system_config.yaml",
+      "exists": true,
+      "size": 530,
+      "modified": "2026-06-10T11:05:35.253Z",
+      "lines": 32
+    },
+    {
+      "path": "configs/thresholds.yaml",
+      "exists": true,
+      "size": 323,
+      "modified": "2026-06-10T11:05:35.253Z",
+      "lines": 22
+    },
+    {
+      "path": "configs/model_config.yaml",
+      "exists": true,
+      "size": 584,
+      "modified": "2026-06-10T11:05:35.253Z",
+      "lines": 33
+    },
+    {
+      "path": "README.md",
+      "exists": true,
+      "size": 11640,
+      "modified": "2026-06-10T11:05:35.218Z",
+      "lines": 310
+    },
+    {
+      "path": "system_analysis.md",
+      "exists": true,
+      "size": 20645,
+      "modified": "2026-06-10T11:05:35.363Z",
+      "lines": 236
+    }
+  ],
+  "models": [
+    {
+      "path": "ml/ml_models/file_model/file_hybrid_final.pkl",
+      "exists": true,
+      "size": 6352515,
+      "modified": "2026-06-10T11:05:35.312Z",
+      "lines": null
+    },
+    {
+      "path": "ml/ml_models/process_model/process_hybrid_final.pkl",
+      "exists": true,
+      "size": 7475599,
+      "modified": "2026-06-10T11:05:35.344Z",
+      "lines": null
+    },
+    {
+      "path": "ml/ml_models/network_model/network_hybrid_model.pkl",
+      "exists": false,
+      "size": 0,
+      "modified": null,
+      "lines": 0
+    }
+  ],
+  "decoys": [
+    {
+      "path": "/shared/finance_test/payroll.csv",
+      "file_type": "csv",
+      "columns": [],
+      "content_type": "csv_financial_summary",
+      "realism": "high",
+      "realism_level": "high",
+      "use_llm_realism": true,
+      "size": "250KB",
+      "sensitivity": "high",
+      "real_os_path": "C:\\shared\\finance_test\\payroll.csv"
+    },
+    {
+      "path": "/ProgramData/DeceptionLab/staging/finance_decoys/M_Drive_Export_3064F7.csv",
+      "file_type": "csv",
+      "columns": [],
+      "content_type": "csv_generic_honeypot_documents_summary",
+      "realism": "medium",
+      "realism_level": "medium",
+      "use_llm_realism": false,
+      "size": "250KB",
+      "sensitivity": "high",
+      "real_os_path": "C:\\ProgramData\\DeceptionLab\\staging\\finance_decoys\\M_Drive_Export_3064F7.csv"
+    },
+    {
+      "path": "/ProgramData/DeceptionLab/staging/finance_decoys/M_Drive_Export_032D56.csv",
+      "file_type": "csv",
+      "columns": [],
+      "content_type": "csv_generic_honeypot_documents_summary",
+      "realism": "medium",
+      "realism_level": "medium",
+      "use_llm_realism": false,
+      "size": "250KB",
+      "sensitivity": "high",
+      "real_os_path": "C:\\ProgramData\\DeceptionLab\\staging\\finance_decoys\\M_Drive_Export_032D56.csv"
+    }
+  ],
+  "tests": [
+    {
+      "path": "tests/run_event_pipeline.py",
+      "tests": [],
+      "lines": 101
+    },
+    {
+      "path": "tests/test_analysis.py",
+      "tests": [],
+      "lines": 47
+    },
+    {
+      "path": "tests/test_deployment_agent.py",
+      "tests": [
+        "test_deployment_output_structure",
+        "test_decoy_registry_population",
+        "test_interception_rules_generation",
+        "test_global_context_presence",
+        "test_sensitivity_assignment"
+      ],
+      "lines": 138
+    },
+    {
+      "path": "tests/test_models.py",
+      "tests": [
+        "test_model_training",
+        "test_model_training",
+        "test_model_training",
+        "test_ensemble_aggregation"
+      ],
+      "lines": 43
+    },
+    {
+      "path": "tests/test_pipeline.py",
+      "tests": [],
+      "lines": 112
+    },
+    {
+      "path": "tests/test_pipeline_attacker.py",
+      "tests": [],
+      "lines": 112
+    },
+    {
+      "path": "tests/test_strategy.py",
+      "tests": [
+        "test_confidence_bands",
+        "test_stage_depth",
+        "test_fallback_strategy_valid",
+        "test_strategy_agent_fallback_without_api_key",
+        "test_deception_graph_invocation"
+      ],
+      "lines": 77
+    }
+  ],
+  "risks": [
+    {
+      "severity": "high",
+      "area": "startup",
+      "title": "Duplicate main guards in main.py",
+      "evidence": "main.py defines two __main__ blocks and two startup paths."
+    },
+    {
+      "severity": "high",
+      "area": "deception deployment",
+      "title": "Deployment can vault and replace real files",
+      "evidence": "DeploymentManager._materialize_file moves existing targets into .aads_vault before writing decoys."
+    }
+  ],
+  "runtime": {
+    "entrypoint": "main.py",
+    "mode": "console",
+    "startsBackendAutomatically": false,
+    "liveApiAvailable": true
+  }
+}
