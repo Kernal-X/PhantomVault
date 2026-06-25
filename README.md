@@ -8,11 +8,10 @@ This project combines:
 - ML routing and risk aggregation
 - LLM-based attacker analysis
 - LLM-based deception strategy planning
-- decoy deployment and file-response interception
+- dynamic file swapping and OS-level active defense
+- **Real-time web dashboard for visualization**
 
-The current runtime is centered around [main.py](/E:/agentic_ai/defense system/main.py), [agents/system_agent.py](/E:/agentic_ai/defense system/agents/system_agent.py), and [langgraph_pipeline.py](/E:/agentic_ai/defense system/langgraph_pipeline.py).
-
-![Workflow Diagram](/E:/agentic_ai/defense system/visual_flows.svg)
+The current runtime is centered around [main.py](main.py), [agents/system_agent.py](agents/system_agent.py), and [langgraph_pipeline.py](langgraph_pipeline.py).
 
 ## Overview
 
@@ -26,23 +25,22 @@ At a high level, the system works like this:
 6. Aggregate model outputs into a global incident risk score.
 7. If the risk is high enough, analyze likely attacker intent and attack stage.
 8. Convert that analysis into a structured deception strategy.
-9. Register decoys and interception rules.
-10. When a protected path is requested through the system flow, serve real, partial, or fake content.
+9. Dynamically generate context-aware fake data matching the attacker's intent.
+10. Execute **Dynamic File Swapping**: vault real files using NTFS cloaking and physically drop fake files in their place.
 
 ## Architecture
 
-The active architecture is the `agents/`, `core/`, `collectors/`, `detectors/`, `logs/`, and `ml/` stack. The older `src/` tree exists, but most of it is legacy or placeholder code and is not the primary runtime path.
+The active architecture is the `agents/`, `core/`, `collectors/`, `detectors/`, `logs/`, and `ml/` stack. 
 
 ### Main runtime path
 
-`main.py -> SystemAgent -> LangGraphSecurityPipeline -> monitor -> enrich -> filter -> score -> ML aggregate -> analysis -> strategy -> deployment -> interception`
+`main.py -> SystemAgent -> LangGraphSecurityPipeline -> monitor -> enrich -> filter -> score -> ML aggregate -> analysis -> strategy -> deployment`
 
 ### Core orchestration files
 
-- [langgraph_pipeline.py](/E:/agentic_ai/defense system/langgraph_pipeline.py): full LangGraph workflow
-- [state_schema.py](/E:/agentic_ai/defense system/state_schema.py): shared graph state schema
-- [agents/system_agent.py](/E:/agentic_ai/defense system/agents/system_agent.py): long-running runtime loop
-- [system_analysis.md](/E:/agentic_ai/defense system/system_analysis.md): detailed repository analysis
+- [langgraph_pipeline.py](langgraph_pipeline.py): full LangGraph workflow
+- [state_schema.py](state_schema.py): shared graph state schema
+- [agents/system_agent.py](agents/system_agent.py): long-running runtime loop
 
 ## LangGraph Workflow
 
@@ -57,7 +55,6 @@ The system is orchestrated as a `StateGraph(SecuritySystemState)` with these nod
 - `analysis`
 - `strategy`
 - `deployment`
-- `interception`
 
 ### Shared state
 
@@ -77,7 +74,6 @@ The graph passes a single shared state object across all nodes, including:
 - `strategy_meta`
 - `deployment`
 - `request_path`
-- `interception_result`
 - `errors`
 - `notes`
 - `cycle_report`
@@ -85,60 +81,60 @@ The graph passes a single shared state object across all nodes, including:
 ### Routing behavior
 
 - In `monitor` mode, the graph runs the full telemetry-to-response pipeline.
-- In `intercept` mode, the graph can jump directly into later stages depending on what state is already present.
 - After alert aggregation, the graph only continues to `analysis` if an aggregated alert is raised.
 - After `strategy`, the graph only continues if a valid strategy exists.
-- After `deployment`, the graph only continues to `interception` if a `request_path` is present.
 
 ## Repository Structure
 
 ### Runtime and orchestration
 
-- [main.py](/E:/agentic_ai/defense system/main.py): application entry point
-- [langgraph_pipeline.py](/E:/agentic_ai/defense system/langgraph_pipeline.py): LangGraph orchestration layer
-- [state_schema.py](/E:/agentic_ai/defense system/state_schema.py): graph state contract
-- [agents/system_agent.py](/E:/agentic_ai/defense system/agents/system_agent.py): runtime loop and live reporting
+- [main.py](main.py): application entry point
+- [langgraph_pipeline.py](langgraph_pipeline.py): LangGraph orchestration layer
+- [state_schema.py](state_schema.py): graph state contract
+- [agents/system_agent.py](agents/system_agent.py): runtime loop and live reporting
 
 ### Event collection
 
-- [collectors/process_collector.py](/E:/agentic_ai/defense system/collectors/process_collector.py): process telemetry
-- [collectors/file_collector.py](/E:/agentic_ai/defense system/collectors/file_collector.py): filesystem event monitoring
-- [collectors/network_collector.py](/E:/agentic_ai/defense system/collectors/network_collector.py): network connection telemetry
-- [core/monitor.py](/E:/agentic_ai/defense system/core/monitor.py): combines all collectors
+- [collectors/process_collector.py](collectors/process_collector.py): process telemetry
+- [collectors/file_collector.py](collectors/file_collector.py): filesystem event monitoring
+- [collectors/network_collector.py](collectors/network_collector.py): network connection telemetry
+- [core/monitor.py](core/monitor.py): combines all collectors
 
 ### Detection and ML
 
-- [agents/event_enrichment.py](/E:/agentic_ai/defense system/agents/event_enrichment.py): feature enrichment
-- [utils/filters.py](/E:/agentic_ai/defense system/utils/filters.py): noise reduction and trusted-process suppression
-- [detectors/scoring.py](/E:/agentic_ai/defense system/detectors/scoring.py): heuristic scoring detector
-- [logs/logger.py](/E:/agentic_ai/defense system/logs/logger.py): ML payload creation and aggregation boundary
-- [ml/ml_models/aggregator_model/router.py](/E:/agentic_ai/defense system/ml/ml_models/aggregator_model/router.py): model routing
-- [ml/ml_models/aggregator_model/aggregator.py](/E:/agentic_ai/defense system/ml/ml_models/aggregator_model/aggregator.py): streaming alert aggregation
+- [agents/event_enrichment.py](agents/event_enrichment.py): feature enrichment
+- [utils/filters.py](utils/filters.py): noise reduction and trusted-process suppression
+- [detectors/scoring.py](detectors/scoring.py): heuristic scoring detector
+- [logs/logger.py](logs/logger.py): ML payload creation and aggregation boundary
+- [ml/ml_models/aggregator_model/router.py](ml/ml_models/aggregator_model/router.py): model routing
+- [ml/ml_models/aggregator_model/aggregator.py](ml/ml_models/aggregator_model/aggregator.py): streaming alert aggregation
 
 ### LLM agents
 
-- [agents/analysis/analysis_agent.py](/E:/agentic_ai/defense system/agents/analysis/analysis_agent.py): attacker intent/stage analysis
-- [agents/strategy/strategy_agent.py](/E:/agentic_ai/defense system/agents/strategy/strategy_agent.py): deception planning
-- [utils/llm_client.py](/E:/agentic_ai/defense system/utils/llm_client.py): shared LLM client
+- [agents/analysis/analysis_agent.py](agents/analysis/analysis_agent.py): attacker intent/stage analysis
+- [agents/strategy/strategy_agent.py](agents/strategy/strategy_agent.py): deception planning
+- [utils/llm_client.py](utils/llm_client.py): shared LLM client
 
 ### Deception and response
 
-- [agents/deployment/deployment_agent.py](/E:/agentic_ai/defense system/agents/deployment/deployment_agent.py): decoy registry and rule creation
-- [core/interception_layer.py](/E:/agentic_ai/defense system/core/interception_layer.py): real/partial/fake response decisions
-- [agents/generation/generation_agent.py](/E:/agentic_ai/defense system/agents/generation/generation_agent.py): fake file content generation
-- [core/path_resolver.py](/E:/agentic_ai/defense system/core/path_resolver.py): decoy path normalization and mapping
+- [agents/deployment/deployment_agent.py](agents/deployment/deployment_agent.py): automated vaulting and decoy deployment
+- [agents/generation/generation_agent.py](agents/generation/generation_agent.py): fake file content generation
+- [test_swap.py](test_swap.py): testing utility for active defense (swapping & recovery)
 
-### Demos and validation
+### Frontend and Visualization
 
-- [presentation_demo.py](/E:/agentic_ai/defense system/presentation_demo.py): step-by-step pipeline demo
-- [presentation_demo_file_attack.py](/E:/agentic_ai/defense system/presentation_demo_file_attack.py): heavier file-focused attack walkthrough
-- [run_all_checks.ps1](/E:/agentic_ai/defense system/run_all_checks.ps1): one-command project validation
+- [dashboard_server.py](dashboard_server.py): API backend for serving telemetry and dashboard metrics
+- `frontend/`: React/Node.js based visualization UI for observing the system in real-time
 
 ## Requirements
 
 ### Python
 
 - Python `>=3.13`
+
+### Node.js (For Frontend)
+
+- Node.js & npm (latest LTS recommended)
 
 ### Models
 
@@ -174,9 +170,20 @@ python -m pip install --upgrade pip
 pip install -r requirements.txt
 ```
 
+### Building the Frontend
+
+Before starting the dashboard server, you must compile the frontend:
+
+```powershell
+cd frontend
+npm install
+npm run build
+cd ..
+```
+
 ## Configuration
 
-Primary runtime configuration lives in [configs/system_config.yaml](/E:/agentic_ai/defense system/configs/system_config.yaml).
+Primary runtime configuration lives in [configs/system_config.yaml](configs/system_config.yaml).
 
 The `monitoring` section controls live file-watch behavior:
 
@@ -195,66 +202,29 @@ Use this to point the app at the folders you want to monitor on your machine.
 
 ## Running the system
 
-### Start the live runtime
+### Start the live runtime (Terminal only)
 
 ```powershell
 .\.venv\Scripts\Activate.ps1
 python main.py
 ```
 
-What you should see:
+### Start the Interactive Dashboard Server (UI)
 
-- startup banner
-- version output
-- monitored file paths
-- periodic live incident reports when events are observed
-
-### Run the one-command validation suite
+If you want to view the system via the Web UI instead of the terminal:
 
 ```powershell
-.\run_all_checks.ps1
+.\.venv\Scripts\Activate.ps1
+python dashboard_server.py
 ```
+Once running, open your web browser and navigate to: `http://127.0.0.1:8765/`
 
-This checks:
-
-- environment prerequisites
-- model artifact presence
-- LLM configuration
-- strategy tests
-- deployment tests
-- pipeline demo
-- attacker simulation
-- watcher demo
-- LangGraph full cycle
-- LangGraph interception mode
-- `main.py` startup smoke test
-
-## Presentation and demo commands
-
-### Clean pipeline walkthrough
+### Test the Dynamic Active Defense (Swapping)
 
 ```powershell
-python presentation_demo.py
+python test_swap.py
 ```
-
-### Realistic file-focused attack walkthrough
-
-```powershell
-python presentation_demo_file_attack.py
-```
-
-### Event-driven watcher demo
-
-```powershell
-python tests\run_event_pipeline.py
-```
-
-Then, in another terminal:
-
-```powershell
-New-Item -ItemType Directory -Force demo_shared\logs
-Set-Content demo_shared\logs\sec_audit.log "trigger"
-```
+This tests the full generation, vaulting, NTFS cloaking, and automated recovery workflow.
 
 ## Example end-to-end flow
 
@@ -269,8 +239,9 @@ Here is the dominant operational path:
 7. The streaming aggregator raises an alert when global risk crosses threshold.
 8. The analysis agent infers intent and attack stage.
 9. The strategy agent creates an executable decoy plan.
-10. The deployment manager registers decoys and interception rules.
-11. The interception layer returns real, partial, or fake content for a requested path.
+10. The deployment manager instantly vaults the genuine file using NTFS cloaking.
+11. The generation agent dynamically synthesizes a realistic decoy.
+12. The deployment manager physically deploys the decoy to trick the attacker at the OS level.
 
 ## Strategy agent summary
 
@@ -282,28 +253,9 @@ It:
 - forces artifact generation under a safe staging root
 - constrains output by deterministic limits
 - validates and repairs the plan
-- falls back to a deterministic safe strategy if the model output is invalid
-
-Important strategy files:
-
-- [agents/strategy/strategy_agent.py](/E:/agentic_ai/defense system/agents/strategy/strategy_agent.py): main controller
-- [agents/strategy/prompt_builder.py](/E:/agentic_ai/defense system/agents/strategy/prompt_builder.py): prompt and hint builder
-- [agents/strategy/parser.py](/E:/agentic_ai/defense system/agents/strategy/parser.py): JSON extraction
-- [agents/strategy/schema.py](/E:/agentic_ai/defense system/agents/strategy/schema.py): planning constants and limits
-- [agents/strategy/validator.py](/E:/agentic_ai/defense system/agents/strategy/validator.py): safety, normalization, validation, fallback
 
 ## Notes and limitations
 
-- The active deception response is strongest on the file side. File generation, deployment metadata, and interception are the most complete parts of the response stack.
-- This project is not a kernel-level filesystem minifilter. It does not transparently replace arbitrary OS file reads for every process on the machine.
-- The live runtime performs real telemetry collection, but “fake content delivery” happens through the project’s interception flow, not through OS-wide file hooking.
-- The older `src/` tree is mostly legacy scaffolding and is not the main runtime path.
-
-## Documentation
-
-- [system_analysis.md](/E:/agentic_ai/defense system/system_analysis.md): deep codebase analysis
-- [visual_flows.svg](/E:/agentic_ai/defense system/visual_flows.svg): workflow diagram
-
-## License
-
-This repository currently has no explicit open-source license file. If you plan to publish it publicly, add a license before release.
+- **OS-Level Deception without Kernel Drivers**: This project utilizes Dynamic File Swapping to achieve OS-level deception. It does not require writing complex, system-destabilizing kernel-level minifilters. When a threat is detected, genuine files are physically migrated into hidden NTFS-cloaked vaults, and hyper-realistic generated decoys are dropped in their place.
+- **Graceful Lock Handling**: If an authentic file is locked by a legitimate process, the system gracefully pivots to deploying adjacent decoys to lure the attacker rather than crashing.
+- **Automated Recovery**: All deception operations are tracked in a secure transaction log. Upon incident resolution, the system automatically wipes decoys and un-cloaks genuine files, guaranteeing zero data loss.
