@@ -64,5 +64,38 @@
     "size": "50KB",
     "sensitivity": "medium",
     "real_os_path": "C:\\ProgramData\\DeceptionLab\\staging\\User_Activity_Log_DECOY.txt"
+  },
+  "/ProgramData/DeceptionLab/staging/Employee_List_DECOY.csv": {
+    "file_type": "csv",
+    "columns": [],
+    "content_type": "csv_employee_data",
+    "realism": "medium",
+    "realism_level": "medium",
+    "use_llm_realism": false,
+    "size": "50KB",
+    "sensitivity": "medium",
+    "real_os_path": "C:\\ProgramData\\DeceptionLab\\staging\\Employee_List_DECOY.csv"
+  },
+  "/ProgramData/DeceptionLab/staging/Project_Proposal_DECOY.docx": {
+    "file_type": "txt",
+    "columns": [],
+    "content_type": "docx_project_proposal",
+    "realism": "medium",
+    "realism_level": "medium",
+    "use_llm_realism": false,
+    "size": "50KB",
+    "sensitivity": "medium",
+    "real_os_path": "C:\\ProgramData\\DeceptionLab\\staging\\Project_Proposal_DECOY.docx"
+  },
+  "/ProgramData/DeceptionLab/staging/Budget_Report_DECOY.xlsx": {
+    "file_type": "txt",
+    "columns": [],
+    "content_type": "xlsx_budget_report",
+    "realism": "medium",
+    "realism_level": "medium",
+    "use_llm_realism": false,
+    "size": "50KB",
+    "sensitivity": "medium",
+    "real_os_path": "C:\\ProgramData\\DeceptionLab\\staging\\Budget_Report_DECOY.xlsx"
   }
 }

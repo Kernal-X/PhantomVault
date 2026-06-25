@@ -3,6 +3,7 @@ __pycache__/
 .env
 *.pkl
 .venv
+registry.json
 cache/
 decoy_env/
 shared/
