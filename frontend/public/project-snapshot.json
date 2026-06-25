@@ -1,11 +1,11 @@
 {
-  "generatedAt": "2026-06-15T18:32:40.498Z",
-  "repoRoot": "E:\\agentic_ai\\defense system",
+  "generatedAt": "2026-06-25T17:35:31.002Z",
+  "repoRoot": "D:\\AI-project",
   "counts": {
-    "files": 153,
-    "directories": 45,
-    "tests": 8,
-    "pythonFiles": 100
+    "files": 155,
+    "directories": 46,
+    "tests": 5,
+    "pythonFiles": 96
   },
   "topLevel": [
     {
@@ -22,23 +22,23 @@
     },
     {
       "name": "frontend",
-      "files": 10
+      "files": 9
     },
     {
-      "name": "tests",
+      "name": "decoy_env",
       "files": 8
-    },
-    {
-      "name": "core",
-      "files": 6
     },
     {
       "name": "data",
       "files": 6
     },
     {
-      "name": ".uv-cache",
-      "files": 4
+      "name": "core",
+      "files": 5
+    },
+    {
+      "name": "tests",
+      "files": 5
     },
     {
       "name": "collectors",
@@ -46,6 +46,10 @@
     },
     {
       "name": "configs",
+      "files": 3
+    },
+    {
+      "name": "shared",
       "files": 3
     },
     {
@@ -199,8 +203,7 @@
       "emit_alerts",
       "analysis",
       "strategy",
-      "deployment",
-      "interception"
+      "deployment"
     ],
     "edges": [
       "START, prepare_state",
@@ -209,13 +212,12 @@
       "filter_events, score_events",
       "score_events, emit_alerts",
       "analysis, strategy",
-      "interception, END"
+      "deployment, END"
     ],
     "conditionals": [
       "prepare_state",
       "emit_alerts",
-      "strategy",
-      "deployment"
+      "strategy"
     ]
   },
   "config": {
@@ -236,7 +238,7 @@
       "path": "main.py",
       "exists": true,
       "size": 760,
-      "modified": "2026-06-10T11:05:35.266Z",
+      "modified": "2026-03-31T21:25:51.473Z",
       "lines": 37,
       "imports": [
         "yaml",
@@ -254,8 +256,8 @@
     {
       "path": "dashboard_server.py",
       "exists": true,
-      "size": 13798,
-      "modified": "2026-06-15T18:18:01.707Z",
+      "size": 14163,
+      "modified": "2026-06-25T17:29:46.667Z",
       "lines": 366,
       "imports": [
         "__future__",
@@ -292,7 +294,7 @@
       "path": "agents/system_agent.py",
       "exists": true,
       "size": 6539,
-      "modified": "2026-06-10T11:05:35.245Z",
+      "modified": "2026-06-08T10:05:03.698Z",
       "lines": 160,
       "imports": [
         "time",
@@ -307,9 +309,9 @@
     {
       "path": "langgraph_pipeline.py",
       "exists": true,
-      "size": 11454,
-      "modified": "2026-06-10T11:05:35.266Z",
-      "lines": 295,
+      "size": 10201,
+      "modified": "2026-06-11T15:34:58.718Z",
+      "lines": 264,
       "imports": [
         "__future__",
         "copy",
@@ -320,7 +322,6 @@
         "agents.event_enrichment",
         "agents.generation.generation_agent",
         "agents.strategy.strategy_agent",
-        "core.interception_layer",
         "core.monitor",
         "detectors.scoring",
         "logs.logger",
@@ -340,7 +341,7 @@
       "path": "state_schema.py",
       "exists": true,
       "size": 894,
-      "modified": "2026-06-10T11:05:35.363Z",
+      "modified": "2026-03-31T21:25:51.476Z",
       "lines": 31,
       "imports": [
         "__future__",
@@ -357,7 +358,7 @@
       "path": "core/monitor.py",
       "exists": true,
       "size": 868,
-      "modified": "2026-06-10T11:05:35.253Z",
+      "modified": "2026-03-31T21:25:51.472Z",
       "lines": 27,
       "imports": [
         "collectors.process_collector",
@@ -374,7 +375,7 @@
       "path": "collectors/process_collector.py",
       "exists": true,
       "size": 3267,
-      "modified": "2026-06-10T11:05:35.245Z",
+      "modified": "2026-03-31T11:11:37.344Z",
       "lines": 84,
       "imports": [
         "time",
@@ -391,7 +392,7 @@
       "path": "collectors/file_collector.py",
       "exists": true,
       "size": 3124,
-      "modified": "2026-06-10T11:05:35.245Z",
+      "modified": "2026-03-31T21:25:51.471Z",
       "lines": 99,
       "imports": [
         "os",
@@ -412,7 +413,7 @@
       "path": "collectors/network_collector.py",
       "exists": true,
       "size": 1737,
-      "modified": "2026-06-10T11:05:35.245Z",
+      "modified": "2026-03-24T19:10:05.222Z",
       "lines": 54,
       "imports": [
         "time",
@@ -429,7 +430,7 @@
       "path": "agents/event_enrichment.py",
       "exists": true,
       "size": 14791,
-      "modified": "2026-06-10T11:05:35.235Z",
+      "modified": "2026-03-31T11:11:37.337Z",
       "lines": 371,
       "imports": [
         "__future__",
@@ -456,7 +457,7 @@
       "path": "utils/filters.py",
       "exists": true,
       "size": 2975,
-      "modified": "2026-06-10T11:05:35.363Z",
+      "modified": "2026-03-24T19:10:05.227Z",
       "lines": 86,
       "imports": [
         "typing",
@@ -472,7 +473,7 @@
       "path": "detectors/scoring.py",
       "exists": true,
       "size": 10652,
-      "modified": "2026-06-10T11:05:35.266Z",
+      "modified": "2026-03-24T19:10:05.224Z",
       "lines": 279,
       "imports": [
         "re",
@@ -491,7 +492,7 @@
       "path": "logs/logger.py",
       "exists": true,
       "size": 12138,
-      "modified": "2026-06-10T11:05:35.266Z",
+      "modified": "2026-03-31T15:25:13.597Z",
       "lines": 333,
       "imports": [
         "time",
@@ -509,7 +510,7 @@
       "path": "ml/ml_models/aggregator_model/router.py",
       "exists": true,
       "size": 1670,
-      "modified": "2026-06-10T11:05:35.278Z",
+      "modified": "2026-03-31T15:25:13.602Z",
       "lines": 49,
       "imports": [
         "__future__",
@@ -528,7 +529,7 @@
       "path": "ml/ml_models/aggregator_model/aggregator.py",
       "exists": true,
       "size": 2275,
-      "modified": "2026-06-10T11:05:35.278Z",
+      "modified": "2026-03-31T21:36:52.490Z",
       "lines": 87,
       "imports": [
         "time",
@@ -544,7 +545,7 @@
       "path": "agents/analysis/analysis_agent.py",
       "exists": true,
       "size": 643,
-      "modified": "2026-06-10T11:05:35.218Z",
+      "modified": "2026-03-29T08:46:31.121Z",
       "lines": 26,
       "imports": [
         ".formatter",
@@ -563,7 +564,7 @@
       "path": "agents/strategy/strategy_agent.py",
       "exists": true,
       "size": 3667,
-      "modified": "2026-06-10T11:05:35.245Z",
+      "modified": "2026-03-31T11:11:37.342Z",
       "lines": 90,
       "imports": [
         "__future__",
@@ -586,7 +587,7 @@
       "path": "agents/deployment/deployment_agent.py",
       "exists": true,
       "size": 11172,
-      "modified": "2026-06-10T11:05:35.218Z",
+      "modified": "2026-06-09T17:57:26.048Z",
       "lines": 302,
       "imports": [
         "os",
@@ -606,7 +607,7 @@
       "path": "agents/generation/generation_agent.py",
       "exists": true,
       "size": 17954,
-      "modified": "2026-06-10T11:05:35.235Z",
+      "modified": "2026-03-31T11:11:37.339Z",
       "lines": 483,
       "imports": [
         "os",
@@ -630,61 +631,55 @@
     },
     {
       "path": "core/interception_layer.py",
-      "exists": true,
-      "size": 5924,
-      "modified": "2026-06-10T11:05:35.253Z",
-      "lines": 183,
-      "imports": [
-        "core.decision_engine",
-        "core.path_resolver",
-        "os"
-      ],
-      "classes": [
-        "InterceptionLayer"
-      ],
+      "exists": false,
+      "size": 0,
+      "modified": null,
+      "lines": 0,
+      "imports": [],
+      "classes": [],
       "functions": [],
-      "excerpt": "# core/interception_layer.py\nfrom core.decision_engine import decide_action\nfrom core.path_resolver import normalize_path, resolve_path\nimport os\nclass InterceptionLayer:\n    def __init__(self, generation_agent=None):\n        self.generation_agent = generation_agent\n        self.SUPPORTED_TYPES = [\"csv\", \"txt\", \"log\", \"json\", \"env\",\"sql\"]"
+      "excerpt": ""
     },
     {
       "path": "registry.json",
       "exists": true,
-      "size": 1218,
-      "modified": "2026-06-15T18:13:21.143Z",
-      "lines": 35
+      "size": 2407,
+      "modified": "2026-06-25T17:29:46.677Z",
+      "lines": 68
     },
     {
       "path": "configs/system_config.yaml",
       "exists": true,
       "size": 530,
-      "modified": "2026-06-10T11:05:35.253Z",
+      "modified": "2026-03-31T21:25:51.471Z",
       "lines": 32
     },
     {
       "path": "configs/thresholds.yaml",
       "exists": true,
       "size": 323,
-      "modified": "2026-06-10T11:05:35.253Z",
+      "modified": "2026-03-29T08:46:31.122Z",
       "lines": 22
     },
     {
       "path": "configs/model_config.yaml",
       "exists": true,
       "size": 584,
-      "modified": "2026-06-10T11:05:35.253Z",
+      "modified": "2026-03-29T08:46:31.122Z",
       "lines": 33
     },
     {
       "path": "README.md",
       "exists": true,
       "size": 11640,
-      "modified": "2026-06-10T11:05:35.218Z",
+      "modified": "2026-04-01T03:00:21.257Z",
       "lines": 310
     },
     {
       "path": "system_analysis.md",
       "exists": true,
       "size": 20645,
-      "modified": "2026-06-10T11:05:35.363Z",
+      "modified": "2026-03-31T15:25:13.605Z",
       "lines": 236
     }
   ],
@@ -693,14 +688,14 @@
       "path": "ml/ml_models/file_model/file_hybrid_final.pkl",
       "exists": true,
       "size": 6352515,
-      "modified": "2026-06-10T11:05:35.312Z",
+      "modified": "2026-03-31T11:11:37.375Z",
       "lines": null
     },
     {
       "path": "ml/ml_models/process_model/process_hybrid_final.pkl",
       "exists": true,
       "size": 7475599,
-      "modified": "2026-06-10T11:05:35.344Z",
+      "modified": "2026-03-31T11:11:37.406Z",
       "lines": null
     },
     {
@@ -747,14 +742,45 @@
       "size": "250KB",
       "sensitivity": "high",
       "real_os_path": "C:\\ProgramData\\DeceptionLab\\staging\\finance_decoys\\M_Drive_Export_032D56.csv"
+    },
+    {
+      "path": "/ProgramData/DeceptionLab/staging/Payroll_Export_Q3_DECOY.csv",
+      "file_type": "csv",
+      "columns": [],
+      "content_type": "csv_financial_summary",
+      "realism": "medium",
+      "realism_level": "medium",
+      "use_llm_realism": false,
+      "size": "50KB",
+      "sensitivity": "medium",
+      "real_os_path": "C:\\ProgramData\\DeceptionLab\\staging\\Payroll_Export_Q3_DECOY.csv"
+    },
+    {
+      "path": "/ProgramData/DeceptionLab/staging/Employee_Records_DECOY.json",
+      "file_type": "json",
+      "columns": [],
+      "content_type": "json_employee_data",
+      "realism": "medium",
+      "realism_level": "medium",
+      "use_llm_realism": false,
+      "size": "50KB",
+      "sensitivity": "medium",
+      "real_os_path": "C:\\ProgramData\\DeceptionLab\\staging\\Employee_Records_DECOY.json"
+    },
+    {
+      "path": "/ProgramData/DeceptionLab/staging/User_Activity_Log_DECOY.txt",
+      "file_type": "txt",
+      "columns": [],
+      "content_type": "text_user_activity",
+      "realism": "medium",
+      "realism_level": "medium",
+      "use_llm_realism": false,
+      "size": "50KB",
+      "sensitivity": "medium",
+      "real_os_path": "C:\\ProgramData\\DeceptionLab\\staging\\User_Activity_Log_DECOY.txt"
     }
   ],
   "tests": [
-    {
-      "path": "tests/run_event_pipeline.py",
-      "tests": [],
-      "lines": 101
-    },
     {
       "path": "tests/test_analysis.py",
       "tests": [],
@@ -780,16 +806,6 @@
         "test_ensemble_aggregation"
       ],
       "lines": 43
-    },
-    {
-      "path": "tests/test_pipeline.py",
-      "tests": [],
-      "lines": 112
-    },
-    {
-      "path": "tests/test_pipeline_attacker.py",
-      "tests": [],
-      "lines": 112
     },
     {
       "path": "tests/test_strategy.py",
