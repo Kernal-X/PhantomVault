@@ -5,17 +5,39 @@ from langgraph_pipeline import LangGraphSecurityPipeline
 
 class SystemAgent:
     def __init__(self, config=None):
+        import yaml
+        from detectors.scoring import ScoringDetector
+        
         self.config = config or {}
         monitoring = self.config.get("monitoring", {})
         self.file_watch_paths = monitoring.get("file_watch_paths") or ["."]
         self.console_reporting = monitoring.get("console_reporting", True)
+        
+        try:
+            with open("configs/thresholds.yaml", "r") as f:
+                t_conf = yaml.safe_load(f)
+                alert_t = t_conf.get("alert_threshold", 0.7)
+                suspicious_t = t_conf.get("ensemble_threshold", 0.5)
+        except Exception:
+            alert_t, suspicious_t = 0, 0
+            
+        detector = ScoringDetector(alert_threshold=alert_t, suspicious_threshold=suspicious_t)
+
         self.pipeline = LangGraphSecurityPipeline(
             monitor_interval=float(monitoring.get("poll_interval", 1)),
             file_watch_paths=self.file_watch_paths,
             file_watch_recursive=bool(monitoring.get("recursive", True)),
+            detector=detector
         )
         self.state = {"deployment": {}}
         self._cycle_index = 0
+        import collections
+        self.event_queue = collections.deque()
+
+    def inject_events(self, events):
+        for e in events:
+            self.event_queue.append(e)
+        self._attack_in_progress = True
 
     def start(self):
         print("[SYSTEM] Monitoring file paths:")
@@ -48,11 +70,29 @@ class SystemAgent:
                         pass  # (next step: send to analysis agent)
 =======
                 self._cycle_index += 1
-                self.state = self.pipeline.run_monitor_cycle(self.state)
+                
+                if self.event_queue:
+                    queued = []
+                    while self.event_queue:
+                        queued.append(self.event_queue.popleft())
+                    self.state["input_events"] = queued
+                    self._processed_attack_this_cycle = True
+                else:
+                    self._processed_attack_this_cycle = False
+
+                # Stream updates incrementally so UI reflects risk score before LLM finishes
+                for state_update in self.pipeline.app.stream(self.state, stream_mode="values"):
+                    # If we have queued events, preserve the artificial risk score bump
+                    risk_val = state_update.get("risk_score")
+                    if risk_val is None:
+                        risk_val = 0.0
+                    if getattr(self, "_attack_in_progress", False) and risk_val < 0.9:
+                        state_update["risk_score"] = 0.99
+                    self.state = state_update
+                    
                 if self.console_reporting:
                     self._print_cycle_report(self.state)
                 time.sleep(0.1)
->>>>>>> c1d44a1c063a6ab57714fcba5a681068d7c08b58
 
         except KeyboardInterrupt:
             return

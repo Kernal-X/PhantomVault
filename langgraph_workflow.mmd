@@ -1,0 +1,40 @@
+---
+config:
+  flowchart:
+    curve: linear
+---
+graph TD;
+	__start__([<p>__start__</p>]):::first
+	prepare_state(prepare_state)
+	collect_events(collect_events)
+	enrich_events(enrich_events)
+	filter_events(filter_events)
+	score_events(score_events)
+	emit_alerts(emit_alerts)
+	analysis(analysis)
+	strategy(strategy)
+	deployment(deployment)
+	interception(interception)
+	__end__([<p>__end__</p>]):::last
+	__start__ --> prepare_state;
+	analysis --> strategy;
+	collect_events --> enrich_events;
+	deployment -. &nbsp;end&nbsp; .-> __end__;
+	deployment -.-> interception;
+	emit_alerts -. &nbsp;end&nbsp; .-> __end__;
+	emit_alerts -.-> analysis;
+	enrich_events --> filter_events;
+	filter_events --> score_events;
+	prepare_state -. &nbsp;end&nbsp; .-> __end__;
+	prepare_state -.-> analysis;
+	prepare_state -.-> collect_events;
+	prepare_state -.-> deployment;
+	prepare_state -.-> interception;
+	prepare_state -.-> strategy;
+	score_events --> emit_alerts;
+	strategy -. &nbsp;end&nbsp; .-> __end__;
+	strategy -.-> deployment;
+	interception --> __end__;
+	classDef default fill:#f2f0ff,line-height:1.2
+	classDef first fill-opacity:0
+	classDef last fill:#bfb6fc

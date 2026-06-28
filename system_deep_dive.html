@@ -1,0 +1,534 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Agentic Security System Deep Dive</title>
+  <script type="module">
+    import mermaid from "https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.esm.min.mjs";
+    mermaid.initialize({
+      startOnLoad: true,
+      theme: "default",
+      flowchart: { curve: "linear" },
+      securityLevel: "loose"
+    });
+  </script>
+  <style>
+    :root {
+      --bg: #f4f6fb;
+      --card: #ffffff;
+      --ink: #172033;
+      --muted: #4f5b73;
+      --line: #d8dfeb;
+      --accent: #1f6feb;
+      --accent-soft: #e8f1ff;
+      --good: #0f9d58;
+      --warn: #c27c00;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      background: linear-gradient(180deg, #eef4ff 0%, var(--bg) 220px);
+      color: var(--ink);
+      font-family: "Segoe UI", Arial, sans-serif;
+      line-height: 1.55;
+    }
+    .page {
+      width: 1100px;
+      margin: 0 auto;
+      padding: 28px 24px 64px;
+    }
+    .hero, section {
+      background: var(--card);
+      border: 1px solid var(--line);
+      border-radius: 18px;
+      padding: 22px 24px;
+      margin-bottom: 18px;
+      box-shadow: 0 12px 30px rgba(17, 24, 39, 0.05);
+      break-inside: avoid;
+      page-break-inside: avoid;
+    }
+    h1, h2, h3, h4 {
+      margin: 0 0 12px;
+      line-height: 1.2;
+    }
+    h1 { font-size: 34px; }
+    h2 {
+      font-size: 24px;
+      padding-bottom: 8px;
+      border-bottom: 1px solid var(--line);
+    }
+    h3 { font-size: 19px; margin-top: 18px; }
+    h4 { font-size: 16px; margin-top: 14px; }
+    p, li { color: var(--ink); }
+    .muted { color: var(--muted); }
+    .grid-2 {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+    }
+    .grid-3 {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 14px;
+    }
+    .pill {
+      display: inline-block;
+      padding: 6px 10px;
+      border-radius: 999px;
+      background: var(--accent-soft);
+      color: var(--accent);
+      font-size: 12px;
+      font-weight: 600;
+      margin: 0 8px 8px 0;
+    }
+    .callout {
+      border-left: 4px solid var(--accent);
+      background: #f8fbff;
+      padding: 12px 14px;
+      border-radius: 10px;
+      color: var(--muted);
+    }
+    .risk {
+      border-left-color: var(--warn);
+      background: #fffaf0;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 12px;
+      font-size: 14px;
+    }
+    th, td {
+      border: 1px solid var(--line);
+      padding: 10px 12px;
+      text-align: left;
+      vertical-align: top;
+    }
+    th {
+      background: #f6f9ff;
+    }
+    code {
+      font-family: Consolas, monospace;
+      font-size: 0.95em;
+      background: #f3f5f8;
+      padding: 1px 5px;
+      border-radius: 4px;
+    }
+    .mermaid {
+      overflow-x: auto;
+      background: #fcfdff;
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      padding: 10px;
+      margin-top: 12px;
+      break-inside: avoid;
+      page-break-inside: avoid;
+    }
+    ul {
+      margin-top: 8px;
+      padding-left: 22px;
+    }
+    .small { font-size: 13px; }
+    @media print {
+      body { background: white; }
+      .page { width: auto; margin: 0; padding: 0; }
+      .hero, section {
+        box-shadow: none;
+        margin-bottom: 12px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="page">
+    <div class="hero">
+      <h1>Agentic Security System</h1>
+      <p class="muted">Full technical deep dive: architecture, LangGraph workflow, ML integration, LLM planning, deception pipeline, runtime behavior, demos, and known limitations.</p>
+      <div>
+        <span class="pill">LangGraph Orchestration</span>
+        <span class="pill">Host Monitoring</span>
+        <span class="pill">ML Risk Scoring</span>
+        <span class="pill">LLM Analysis</span>
+        <span class="pill">Deception Strategy</span>
+        <span class="pill">File-Focused Response</span>
+      </div>
+      <div class="callout">
+        <strong>Core idea:</strong> the system monitors host telemetry, detects suspicious behavior, estimates risk with ML, reasons about attacker intent with LLMs, plans deception, deploys decoys, and conditionally serves fake content through its interception flow.
+      </div>
+    </div>
+
+    <section>
+      <h2>1. Executive Summary</h2>
+      <p>The project is a layered security pipeline built around one explicit orchestration graph. It monitors process, file, and network activity, derives enriched behavioral features, filters noise, scores suspicious events, routes events into specialized ML models, aggregates risk, and only then escalates into LLM-based analysis and deception planning.</p>
+      <p>The strongest and most complete part of the system is the <strong>file-side deception path</strong>: strategy planning, decoy deployment metadata, file interception decisions, and realistic fake content generation. LangGraph is used as the control plane that ties these modules together into a single, testable workflow.</p>
+    </section>
+
+    <section>
+      <h2>2. High-Level Architecture</h2>
+      <div class="mermaid">
+flowchart LR
+    A["Process / File / Network Collectors"] --> B["Event Enrichment"]
+    B --> C["Noise Filtering"]
+    C --> D["Rule-Based Scoring Detector"]
+    D --> E["Logger + ML Router"]
+    E --> F["Streaming Aggregator"]
+    F --> G{"Incident Threshold Crossed?"}
+    G -->|"No"| Z["End Cycle"]
+    G -->|"Yes"| H["Analysis Agent"]
+    H --> I["Strategy Agent"]
+    I --> J["Deployment Manager"]
+    J --> K{"Request Path Exists?"}
+    K -->|"No"| Z
+    K -->|"Yes"| L["Interception Layer"]
+    L --> M["Generation Agent"]
+    M --> Z
+      </div>
+      <p>The left half is detection and risk aggregation. The right half is deception planning and controlled response.</p>
+    </section>
+
+    <section>
+      <h2>3. Active Runtime Path</h2>
+      <p>The dominant executable path in the repository is:</p>
+      <p><code>main.py -> SystemAgent -> LangGraphSecurityPipeline -> monitor -> enrich -> filter -> score -> emit_alerts -> analysis -> strategy -> deployment -> interception</code></p>
+      <div class="grid-2">
+        <div>
+          <h3>Primary runtime files</h3>
+          <ul>
+            <li><code>main.py</code>: startup and config loading</li>
+            <li><code>agents/system_agent.py</code>: long-running live loop</li>
+            <li><code>langgraph_pipeline.py</code>: orchestration graph</li>
+            <li><code>state_schema.py</code>: unified shared state</li>
+          </ul>
+        </div>
+        <div>
+          <h3>Main subsystems</h3>
+          <ul>
+            <li><code>collectors/</code>: telemetry ingestion</li>
+            <li><code>detectors/</code> and <code>logs/</code>: detection and ML handoff</li>
+            <li><code>agents/analysis</code> and <code>agents/strategy</code>: LLM reasoning</li>
+            <li><code>agents/deployment</code>, <code>core/interception_layer.py</code>, and <code>agents/generation</code>: deception response</li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <section>
+      <h2>4. LangGraph State</h2>
+      <p>The graph is built over a shared state object defined in <code>state_schema.py</code>. Every node reads what it needs and writes its output back to this one structure.</p>
+      <table>
+        <thead>
+          <tr><th>State Field</th><th>Purpose</th></tr>
+        </thead>
+        <tbody>
+          <tr><td><code>mode</code></td><td>Controls whether the graph runs a full monitoring cycle or an interception-oriented path.</td></tr>
+          <tr><td><code>input_events</code></td><td>Optional externally supplied events for demos, tests, or forced executions.</td></tr>
+          <tr><td><code>raw_events</code></td><td>Collected telemetry straight from the monitor.</td></tr>
+          <tr><td><code>enriched_events</code></td><td>Events after feature engineering.</td></tr>
+          <tr><td><code>filtered_events</code></td><td>Events after noise suppression.</td></tr>
+          <tr><td><code>detections</code></td><td>Detection records containing event, rule output, and acceptance decision.</td></tr>
+          <tr><td><code>suspicious_events</code></td><td>Accepted suspicious events.</td></tr>
+          <tr><td><code>alert_records</code></td><td>Logger + ML router + aggregator outputs.</td></tr>
+          <tr><td><code>risk_score</code></td><td>Dominant aggregated incident score.</td></tr>
+          <tr><td><code>analysis</code></td><td>Attacker intent/stage/confidence interpretation.</td></tr>
+          <tr><td><code>strategy</code></td><td>Executable deception plan.</td></tr>
+          <tr><td><code>strategy_meta</code></td><td>Strategy provenance and fallback metadata.</td></tr>
+          <tr><td><code>deployment</code></td><td>Decoy registry, context, and interception rules.</td></tr>
+          <tr><td><code>request_path</code></td><td>Requested file path for interception mode.</td></tr>
+          <tr><td><code>interception_result</code></td><td>Final real, partial, or fake content returned by the interception flow.</td></tr>
+          <tr><td><code>errors</code>, <code>notes</code>, <code>cycle_report</code></td><td>Operational traces and live reporting.</td></tr>
+        </tbody>
+      </table>
+    </section>
+
+    <section>
+      <h2>5. LangGraph Nodes and Edges</h2>
+      <div class="mermaid">
+flowchart TD
+    S["START"] --> P["prepare_state"]
+    P --> R{"route_after_prepare"}
+    R -->|"monitor"| C["collect_events"]
+    R -->|"analysis present"| A["analysis"]
+    R -->|"strategy present"| ST["strategy"]
+    R -->|"deployment present"| D["deployment"]
+    R -->|"request_path path"| I["interception"]
+    R -->|"no work"| E1["END"]
+    C --> EN["enrich_events"]
+    EN --> F["filter_events"]
+    F --> SC["score_events"]
+    SC --> EM["emit_alerts"]
+    EM --> R2{"route_after_alerting"}
+    R2 -->|"no aggregated alert"| E2["END"]
+    R2 -->|"aggregated alert"| A
+    A --> ST
+    ST --> R3{"route_after_strategy"}
+    R3 -->|"no strategy"| E3["END"]
+    R3 -->|"strategy exists"| D
+    D --> R4{"route_after_deployment"}
+    R4 -->|"no request_path"| E4["END"]
+    R4 -->|"request_path exists"| I
+    I --> E5["END"]
+      </div>
+      <h3>Node responsibilities</h3>
+      <table>
+        <thead>
+          <tr><th>Node</th><th>Reads</th><th>Writes</th><th>Wrapped component</th></tr>
+        </thead>
+        <tbody>
+          <tr><td><code>prepare_state</code></td><td>incoming state</td><td>reset cycle fields</td><td>internal state initializer</td></tr>
+          <tr><td><code>collect_events</code></td><td><code>input_events</code> or monitor</td><td><code>raw_events</code></td><td><code>core.monitor.Monitor</code></td></tr>
+          <tr><td><code>enrich_events</code></td><td><code>raw_events</code></td><td><code>enriched_events</code></td><td><code>agents.event_enrichment.EventEnricher</code></td></tr>
+          <tr><td><code>filter_events</code></td><td><code>enriched_events</code></td><td><code>filtered_events</code></td><td><code>utils.filters.EventFilter</code></td></tr>
+          <tr><td><code>score_events</code></td><td><code>filtered_events</code></td><td><code>detections</code>, <code>suspicious_events</code></td><td><code>detectors.scoring.ScoringDetector</code></td></tr>
+          <tr><td><code>emit_alerts</code></td><td><code>detections</code></td><td><code>alert_records</code>, <code>risk_score</code></td><td><code>logs.logger.SOCLogger</code></td></tr>
+          <tr><td><code>analysis</code></td><td><code>alert_records</code>, <code>risk_score</code></td><td><code>analysis</code></td><td><code>agents.analysis.analysis_agent</code></td></tr>
+          <tr><td><code>strategy</code></td><td><code>analysis</code></td><td><code>strategy</code>, <code>strategy_meta</code></td><td><code>agents.strategy.strategy_agent</code></td></tr>
+          <tr><td><code>deployment</code></td><td><code>strategy</code></td><td><code>deployment</code></td><td><code>agents.deployment.deployment_agent.DeploymentManager</code></td></tr>
+          <tr><td><code>interception</code></td><td><code>request_path</code>, <code>analysis</code>, <code>deployment</code></td><td><code>interception_result</code></td><td><code>core.interception_layer.InterceptionLayer</code></td></tr>
+        </tbody>
+      </table>
+    </section>
+
+    <section>
+      <h2>6. Detection and ML Integration</h2>
+      <p>LangGraph does not directly run the models itself. Instead, the graph reaches the ML layer through the <code>emit_alerts</code> node, which calls the logger. The logger builds normalized ML payloads, routes them to the correct model, and sends outputs into the streaming aggregator.</p>
+      <div class="mermaid">
+flowchart LR
+    A["score_events node"] --> B["emit_alerts node"]
+    B --> C["SOCLogger.emit()"]
+    C --> D["Build normalized ML payload"]
+    D --> E["ModelRouter.route()"]
+    E --> F1["File Model"]
+    E --> F2["Process Model"]
+    E --> F3["Network Model"]
+    F1 --> G["StreamingAggregator.add_event()"]
+    F2 --> G
+    F3 --> G
+    G --> H["alert_records + risk_score"]
+    H --> I{"Aggregated alert?"}
+    I -->|"No"| J["End Graph"]
+    I -->|"Yes"| K["analysis node"]
+      </div>
+      <h3>Why this design matters</h3>
+      <ul>
+        <li>Rule-based detection catches suspicious patterns quickly.</li>
+        <li>Specialized models score different event categories differently.</li>
+        <li>The aggregator prevents single weak anomalies from always escalating into expensive LLM reasoning.</li>
+      </ul>
+    </section>
+
+    <section>
+      <h2>7. Analysis Agent</h2>
+      <p>The analysis agent takes aggregated suspicious events and infers attacker intent, attack stage, confidence, and reasoning. It acts as the semantic bridge between raw risk and strategic response.</p>
+      <div class="grid-2">
+        <div>
+          <h3>Inputs</h3>
+          <ul>
+            <li><code>risk_score</code></li>
+            <li>aggregated suspicious events</li>
+          </ul>
+        </div>
+        <div>
+          <h3>Outputs</h3>
+          <ul>
+            <li><code>intent</code></li>
+            <li><code>attack_stage</code></li>
+            <li><code>confidence</code></li>
+            <li><code>reasoning</code></li>
+          </ul>
+        </div>
+      </div>
+      <p>Typical intent examples include <code>data_exfiltration</code>, <code>lateral_movement</code>, and <code>reconnaissance</code>. Typical stage values include <code>collection</code>, <code>exfiltration</code>, and <code>credential_access</code>.</p>
+    </section>
+
+    <section>
+      <h2>8. Strategy Agent</h2>
+      <p>The strategy agent is the planning layer. It takes analysis output and converts it into a structured deception blueprint. It does not create files directly; it decides what should exist, where it should be placed, how much attacker interaction should be allowed, and what should be monitored.</p>
+      <div class="mermaid">
+flowchart TD
+    A["analysis input"] --> B["determine safe staging root"]
+    B --> C["build deterministic hints"]
+    C --> D["build strict JSON-only prompt"]
+    D --> E["call strategy LLM"]
+    E --> F["parse JSON"]
+    F --> G["apply deterministic overrides"]
+    G --> H["normalize enums and repair fields"]
+    H --> I["enforce safety and decoy tags"]
+    I --> J["trim plan to policy limits"]
+    J --> K["validate final shape"]
+    K -->|"valid"| L["return strategy + strategy_meta"]
+    K -->|"invalid"| M["build deterministic fallback strategy"]
+    M --> L
+      </div>
+      <h3>Strategy module files</h3>
+      <table>
+        <thead>
+          <tr><th>File</th><th>Role</th></tr>
+        </thead>
+        <tbody>
+          <tr><td><code>agents/strategy/strategy_agent.py</code></td><td>Main controller for the planning pipeline.</td></tr>
+          <tr><td><code>agents/strategy/prompt_builder.py</code></td><td>Builds deterministic hints and the strict JSON prompt.</td></tr>
+          <tr><td><code>agents/strategy/parser.py</code></td><td>Extracts JSON from model output.</td></tr>
+          <tr><td><code>agents/strategy/schema.py</code></td><td>Defines allowed planning values and generation limits.</td></tr>
+          <tr><td><code>agents/strategy/validator.py</code></td><td>Repairs, validates, constrains, and falls back safely.</td></tr>
+        </tbody>
+      </table>
+      <div class="callout">
+        <strong>Key design decision:</strong> the LLM is allowed to propose a plan, but deterministic policy decides the final safe output.
+      </div>
+    </section>
+
+    <section>
+      <h2>9. Deployment and Interception</h2>
+      <p>Deployment converts the strategy blueprint into operational metadata. Interception consumes that metadata plus attacker analysis to decide whether a file request should return real content, blended content, or fake content.</p>
+      <div class="mermaid">
+flowchart LR
+    A["strategy"] --> B["DeploymentManager.deploy()"]
+    B --> C["decoy_registry"]
+    B --> D["global_context"]
+    B --> E["interception_rules"]
+    C --> F["InterceptionLayer.handle()"]
+    D --> F
+    E --> F
+    G["analysis"] --> F
+    H["request_path"] --> F
+    F --> I{"decision_engine"}
+    I -->|"real"| J["read real file"]
+    I -->|"partial"| K["blend real + generated fake"]
+    I -->|"fake"| L["GenerationAgent.generate()"]
+      </div>
+      <p>The most mature response surface in the project is the file side. The deployment registry and interception logic are designed mainly around decoy file artifacts.</p>
+    </section>
+
+    <section>
+      <h2>10. SystemAgent Runtime</h2>
+      <p><code>SystemAgent</code> is the long-running runtime controller. It is responsible for continuously invoking the LangGraph workflow and printing live incident summaries.</p>
+      <h3>Responsibilities</h3>
+      <ul>
+        <li>load monitoring configuration</li>
+        <li>configure watched file paths</li>
+        <li>construct <code>LangGraphSecurityPipeline</code></li>
+        <li>run repeated monitoring cycles</li>
+        <li>print human-readable cycle reports</li>
+      </ul>
+      <h3>Live cycle reporting</h3>
+      <p>Each interesting cycle can report:</p>
+      <ul>
+        <li>how many events were seen</li>
+        <li>event type distribution</li>
+        <li>file paths observed</li>
+        <li>suspicious file targets</li>
+        <li>aggregated risk score</li>
+        <li>analysis summary</li>
+        <li>deployed decoys</li>
+      </ul>
+    </section>
+
+    <section>
+      <h2>11. File-Focused Realistic Attack Story</h2>
+      <p>The most presentation-friendly scenario is a file-heavy intrusion sequence, because it exercises the strongest parts of the system.</p>
+      <div class="mermaid">
+flowchart TD
+    A["winword.exe opens malicious document"] --> B["spawns powershell.exe"]
+    B --> C["connects to external IP"]
+    C --> D["touches payroll CSV"]
+    D --> E["touches backup credentials"]
+    E --> F["touches .env / config secrets"]
+    F --> G["creates archive dump files"]
+    G --> H["detection + ML aggregation"]
+    H --> I["analysis: likely exfiltration"]
+    I --> J["strategy: targeted file deception"]
+    J --> K["deployment: decoy files + rules"]
+    K --> L["interception: fake content returned"]
+      </div>
+      <p>This exact style of scenario is demonstrated in the file-focused walkthrough script and is the best way to show the complete system end to end.</p>
+    </section>
+
+    <section>
+      <h2>12. End-to-End Validation Workflow</h2>
+      <p>The repository contains a one-command PowerShell validation script that checks the major paths of the system.</p>
+      <div class="grid-2">
+        <div>
+          <h3>Validation covers</h3>
+          <ul>
+            <li>environment prerequisites</li>
+            <li>model artifact presence</li>
+            <li>LLM config consistency</li>
+            <li>strategy tests</li>
+            <li>deployment tests</li>
+            <li>pipeline demo</li>
+            <li>attacker simulation</li>
+            <li>watcher demo</li>
+            <li>LangGraph full cycle</li>
+            <li>interception mode</li>
+            <li>main startup smoke test</li>
+          </ul>
+        </div>
+        <div>
+          <h3>Main commands</h3>
+          <ul>
+            <li><code>.\run_all_checks.ps1</code></li>
+            <li><code>python presentation_demo.py</code></li>
+            <li><code>python presentation_demo_file_attack.py</code></li>
+            <li><code>python tests\run_event_pipeline.py</code></li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <section>
+      <h2>13. Strengths</h2>
+      <div class="grid-3">
+        <div class="callout">
+          <h3>Explicit orchestration</h3>
+          <p>LangGraph makes the workflow visible, conditional, and state-driven instead of implicit.</p>
+        </div>
+        <div class="callout">
+          <h3>Layered reasoning</h3>
+          <p>Rules, ML, and LLMs each serve distinct roles rather than competing with each other.</p>
+        </div>
+        <div class="callout">
+          <h3>Strong file response path</h3>
+          <p>The project demonstrates coherent file-focused deception from planning to fake content generation.</p>
+        </div>
+      </div>
+    </section>
+
+    <section>
+      <h2>14. Limitations and Loopholes</h2>
+      <div class="callout risk">
+        <strong>Important:</strong> this system is not a kernel-level, tamper-proof, full-OS interception product.
+      </div>
+      <ul>
+        <li>If an attacker gains complete administrative or kernel-level control of the OS, a user-space orchestration system cannot guarantee persistence.</li>
+        <li>The strongest response path is file-based deception. Other response surfaces are less complete.</li>
+        <li>The interception flow is controlled by application logic, not by a Windows minifilter or universal filesystem hook.</li>
+        <li>The repository still contains an older <code>src/</code> scaffold, which is not the real runtime path.</li>
+        <li>LLM quality and availability affect the quality of analysis and strategy generation, although safe fallbacks reduce that risk.</li>
+      </ul>
+      <h3>Best way to answer this in defense</h3>
+      <p>If asked how the system persists after full OS compromise, the correct answer is:</p>
+      <div class="callout risk">
+        “If the attacker has full OS control, a user-space system cannot be assumed fully trustworthy. The value of this project is early detection, deception, and visibility before that point, not guaranteed survival under total host compromise.”
+      </div>
+    </section>
+
+    <section>
+      <h2>15. Future Improvements</h2>
+      <ul>
+        <li>physically materialize deployed decoys into configured real watch folders by default</li>
+        <li>introduce protected remote logging and remote orchestration</li>
+        <li>expand deception beyond files into stronger network and endpoint surfaces</li>
+        <li>add kernel-level or gateway-level interception if full transparent file substitution is required</li>
+        <li>improve packaging and documentation around the active runtime versus legacy scaffolding</li>
+      </ul>
+    </section>
+
+    <section>
+      <h2>16. Final Summary</h2>
+      <p>This system is best described as a <strong>LangGraph-orchestrated host monitoring and deception platform</strong>. Its main contribution is not a single detector or single agent, but the way it unifies telemetry collection, risk estimation, semantic reasoning, deception planning, deployment, and controlled response into one coherent workflow.</p>
+      <p>In practical terms, it detects suspicious behavior, estimates attacker risk, reasons about likely intent, plans targeted decoys, and can serve believable fake artifacts in a file-focused defense scenario. That is the full system story.</p>
+    </section>
+  </div>
+</body>
+</html>

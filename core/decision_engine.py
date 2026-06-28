@@ -25,8 +25,10 @@ def decide_action(path, metadata, rules, analysis, supported_types):
     # MEDIUM CONFIDENCE
     # ------------------------
     if 0.4 <= confidence < 0.7:
-        if mode == "partial":
-            return "partial"
+        # This project uses binary responses: REAL or FAKE.
+        # "partial" mode is treated as "fake" for safer deception (no real-data leakage).
+        if mode in {"partial", "full"}:
+            return "fake"
         return "real"
 
     # ------------------------
@@ -40,6 +42,7 @@ def decide_action(path, metadata, rules, analysis, supported_types):
         if stage in ["discovery", "lateral_movement", "exfiltration"]:
             return "fake"
 
-        return "fake" if mode == "full" else "partial"
+        # This project uses binary responses: REAL or FAKE.
+        return "fake" if mode in {"partial", "full"} else "real"
 
     return "real"

@@ -65,6 +65,7 @@ function Run-PythonCommand {
 
     $outFile = Join-Path $cacheDir ("check_" + [guid]::NewGuid().ToString() + ".out")
     $errFile = Join-Path $cacheDir ("check_" + [guid]::NewGuid().ToString() + ".err")
+    $proc = $null
 
     try {
         $proc = Start-Process -FilePath $python `
@@ -75,21 +76,15 @@ function Run-PythonCommand {
             -RedirectStandardError $errFile
 
         if (-not $proc.WaitForExit($TimeoutSeconds * 1000)) {
-            try { Stop-Process -Id $proc.Id -Force } catch {}
+            try { $proc.Kill() } catch {}
             throw "Timed out after $TimeoutSeconds seconds: python $($Arguments -join ' ')"
         }
 
         $stdout = if (Test-Path $outFile) { Get-Content $outFile -Raw } else { "" }
         $stderr = if (Test-Path $errFile) { Get-Content $errFile -Raw } else { "" }
 
-        $proc.Refresh()
-        $exitCode = $proc.ExitCode
-        if ($null -eq $exitCode) {
-            $exitCode = 0
-        }
-
         return [pscustomobject]@{
-            ExitCode = [int]$exitCode
+            ExitCode = [int]$proc.ExitCode
             StdOut = $stdout
             StdErr = $stderr
         }

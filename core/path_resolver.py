@@ -4,7 +4,7 @@ DECOY_ROOT = os.path.abspath("./decoy_env")
 
 
 def normalize_path(path: str) -> str:
-    """
+    r"""
     Convert ANY incoming path (Windows/Linux) → virtual path
     Example:
         D:\shared\logs\a.log → /shared/logs/a.log
@@ -12,17 +12,23 @@ def normalize_path(path: str) -> str:
     if not path:
         return None
 
-    path = path.replace("\\", "/")
+    path = str(path).replace("\\", "/")
 
     # remove drive letter (C:, D:)
     if ":" in path:
         path = path.split(":", 1)[1]
 
-    # ensure leading slash
-    if not path.startswith("/"):
-        path = "/" + path
+    # Canonicalize to known virtual roots if present anywhere in the path.
+    # This keeps registry keys stable even when absolute OS paths are observed.
+    parts = [p for p in path.split("/") if p]
+    lowered = [p.lower() for p in parts]
+    for anchor in ("shared", "demo_shared"):
+        if anchor in lowered:
+            idx = lowered.index(anchor)
+            parts = parts[idx:]
+            break
 
-    return path
+    return "/" + "/".join(parts) if parts else "/"
 
 
 def resolve_path(path: str) -> str:
