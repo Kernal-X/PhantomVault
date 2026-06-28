@@ -9,20 +9,20 @@ from typing import Any, Dict, List, Literal, Optional, Tuple, TypedDict
 STRATEGY_TYPES = frozenset({"targeted", "hybrid", "exploratory"})
 SPREAD_STRATEGIES = frozenset(
     {
-        "single_directory",
-        "clustered_directories",
-        "distributed_shares",
-        "hilbert_hostname_mirror",
-        "network_island",
+        "single_directory", # one folder
+        "clustered_directories",    # few related folders
+        "distributed_shares",   # across system/network
+        "hilbert_hostname_mirror",  # fake isolated network
+        "network_island",   # advanced structured mapping
     }
 )
 DEPTH_VALUES = frozenset(
     {
-        "minimal_deception",
-        "moderate",
-        "data_heavy",
-        "high_deception",
-        "network_expansion",
+        "minimal_deception",    # very light
+        "moderate", # balanced
+        "data_heavy",   # lots of files
+        "high_deception",   # deepfake system
+        "network_expansion",    # fake network
     }
 )
 INTERACTION_LEVELS = frozenset(

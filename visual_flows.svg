@@ -1,0 +1,147 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1600" height="1220" viewBox="0 0 1600 1220">
+  <defs>
+    <style>
+      .title { font: 700 34px Arial, sans-serif; fill: #132a13; }
+      .subtitle { font: 600 22px Arial, sans-serif; fill: #31572c; }
+      .label { font: 600 18px Arial, sans-serif; fill: #081c15; }
+      .small { font: 500 15px Arial, sans-serif; fill: #1b4332; }
+      .box { fill: #f4fff8; stroke: #2d6a4f; stroke-width: 2.5; rx: 16; ry: 16; }
+      .decision { fill: #fff8e8; stroke: #bc6c25; stroke-width: 2.5; }
+      .phaseA { fill: #d8f3dc; stroke: #40916c; stroke-width: 2.5; }
+      .phaseB { fill: #e9f5db; stroke: #588157; stroke-width: 2.5; }
+      .phaseC { fill: #fff3bf; stroke: #bc6c25; stroke-width: 2.5; }
+      .arrow { stroke: #1b4332; stroke-width: 3; fill: none; marker-end: url(#arrowhead); }
+      .dash { stroke-dasharray: 10 8; }
+    </style>
+    <marker id="arrowhead" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
+      <polygon points="0 0, 10 3.5, 0 7" fill="#1b4332"/>
+    </marker>
+  </defs>
+
+  <rect width="1600" height="1220" fill="#fbfffb"/>
+
+  <text x="70" y="60" class="title">LangGraph Security Pipeline Visual Flows</text>
+
+  <text x="70" y="110" class="subtitle">1. Main LangGraph Orchestration</text>
+
+  <rect x="80" y="150" width="180" height="70" rx="16" ry="16" class="phaseA"/>
+  <text x="128" y="193" class="label">START</text>
+
+  <rect x="320" y="150" width="220" height="70" rx="16" ry="16" class="box"/>
+  <text x="361" y="193" class="label">prepare_state</text>
+
+  <polygon points="670,145 800,185 670,225 540,185" class="decision"/>
+  <text x="722" y="191" class="label">mode?</text>
+
+  <rect x="880" y="80" width="220" height="70" rx="16" ry="16" class="phaseA"/>
+  <text x="922" y="123" class="label">collect_events</text>
+
+  <rect x="1160" y="80" width="220" height="70" rx="16" ry="16" class="phaseA"/>
+  <text x="1208" y="123" class="label">enrich_events</text>
+
+  <rect x="880" y="180" width="220" height="70" rx="16" ry="16" class="phaseA"/>
+  <text x="932" y="223" class="label">filter_events</text>
+
+  <rect x="1160" y="180" width="220" height="70" rx="16" ry="16" class="phaseA"/>
+  <text x="1214" y="223" class="label">score_events</text>
+
+  <rect x="880" y="280" width="220" height="70" rx="16" ry="16" class="phaseB"/>
+  <text x="940" y="323" class="label">emit_alerts</text>
+
+  <polygon points="1270,275 1400,315 1270,355 1140,315" class="decision"/>
+  <text x="1202" y="309" class="small">aggregated</text>
+  <text x="1223" y="329" class="small">alert?</text>
+
+  <rect x="880" y="400" width="220" height="70" rx="16" ry="16" class="phaseB"/>
+  <text x="952" y="443" class="label">analysis</text>
+
+  <rect x="1160" y="400" width="220" height="70" rx="16" ry="16" class="phaseB"/>
+  <text x="1236" y="443" class="label">strategy</text>
+
+  <polygon points="1270,495 1400,535 1270,575 1140,535" class="decision"/>
+  <text x="1194" y="529" class="small">strategy</text>
+  <text x="1208" y="549" class="small">exists?</text>
+
+  <rect x="880" y="620" width="220" height="70" rx="16" ry="16" class="phaseC"/>
+  <text x="944" y="663" class="label">deployment</text>
+
+  <polygon points="1270,615 1400,655 1270,695 1140,655" class="decision"/>
+  <text x="1202" y="649" class="small">request_path?</text>
+
+  <rect x="880" y="740" width="220" height="70" rx="16" ry="16" class="phaseC"/>
+  <text x="940" y="783" class="label">interception</text>
+
+  <rect x="1160" y="740" width="180" height="70" rx="16" ry="16" class="phaseC"/>
+  <text x="1217" y="783" class="label">END</text>
+
+  <path d="M260 185 L320 185" class="arrow"/>
+  <path d="M540 185 L650 185" class="arrow"/>
+  <path d="M800 185 L880 115" class="arrow"/>
+  <text x="820" y="132" class="small">monitor</text>
+
+  <path d="M1100 115 L1160 115" class="arrow"/>
+  <path d="M1270 150 L1270 180" class="arrow"/>
+  <path d="M1160 215 L1100 215" class="arrow"/>
+  <path d="M1100 215 L1100 315 L880 315" class="arrow"/>
+  <path d="M1100 315 L1140 315" class="arrow"/>
+  <path d="M1270 355 L1270 400" class="arrow"/>
+  <text x="1287" y="385" class="small">yes</text>
+  <path d="M1400 315 L1480 315 L1480 775 L1340 775" class="arrow"/>
+  <text x="1420" y="335" class="small">no</text>
+
+  <path d="M1100 435 L1160 435" class="arrow"/>
+  <path d="M1270 470 L1270 495" class="arrow"/>
+  <path d="M1270 575 L1270 620 L1100 620" class="arrow"/>
+  <text x="1288" y="603" class="small">yes</text>
+  <path d="M1400 535 L1480 535 L1480 775 L1340 775" class="arrow"/>
+  <text x="1420" y="555" class="small">no</text>
+
+  <path d="M1100 655 L1140 655" class="arrow"/>
+  <path d="M1270 695 L1270 740 L1100 740" class="arrow"/>
+  <text x="1288" y="723" class="small">yes</text>
+  <path d="M1400 655 L1480 655 L1480 775 L1340 775" class="arrow"/>
+  <text x="1420" y="675" class="small">no</text>
+
+  <path d="M1100 775 L1160 775" class="arrow"/>
+
+  <path d="M800 185 L800 860 L990 860 L990 810" class="arrow dash"/>
+  <text x="816" y="844" class="small">intercept mode can enter with prior state</text>
+
+  <text x="70" y="930" class="subtitle">2. High-Level Operational Flow</text>
+
+  <rect x="90" y="980" width="190" height="90" rx="18" ry="18" class="phaseA"/>
+  <text x="130" y="1020" class="label">Telemetry</text>
+  <text x="120" y="1045" class="small">process / file /</text>
+  <text x="128" y="1065" class="small">network events</text>
+
+  <rect x="330" y="980" width="190" height="90" rx="18" ry="18" class="phaseA"/>
+  <text x="387" y="1020" class="label">Rule Scoring</text>
+  <text x="365" y="1045" class="small">enrichment + filter +</text>
+  <text x="394" y="1065" class="small">detector</text>
+
+  <rect x="570" y="980" width="190" height="90" rx="18" ry="18" class="phaseB"/>
+  <text x="610" y="1020" class="label">ML Aggregation</text>
+  <text x="623" y="1045" class="small">router + models +</text>
+  <text x="643" y="1065" class="small">streaming score</text>
+
+  <rect x="810" y="980" width="190" height="90" rx="18" ry="18" class="phaseB"/>
+  <text x="865" y="1020" class="label">LLM Analysis</text>
+  <text x="842" y="1045" class="small">intent + attack stage +</text>
+  <text x="868" y="1065" class="small">confidence</text>
+
+  <rect x="1050" y="980" width="190" height="90" rx="18" ry="18" class="phaseC"/>
+  <text x="1094" y="1020" class="label">Strategy +</text>
+  <text x="1090" y="1045" class="label">Deployment</text>
+  <text x="1088" y="1065" class="small">decoy registry + rules</text>
+
+  <rect x="1290" y="980" width="220" height="90" rx="18" ry="18" class="phaseC"/>
+  <text x="1342" y="1020" class="label">Interception +</text>
+  <text x="1346" y="1045" class="label">Generation</text>
+  <text x="1340" y="1065" class="small">real / partial / fake</text>
+
+  <path d="M280 1025 L330 1025" class="arrow"/>
+  <path d="M520 1025 L570 1025" class="arrow"/>
+  <path d="M760 1025 L810 1025" class="arrow"/>
+  <path d="M1000 1025 L1050 1025" class="arrow"/>
+  <path d="M1240 1025 L1290 1025" class="arrow"/>
+</svg>

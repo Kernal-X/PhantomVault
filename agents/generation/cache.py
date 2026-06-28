@@ -122,7 +122,7 @@ def clear_cache():
             os.remove(file_path)
 
 
-def clear_cache_for_path(path: str):
+def clear_cache_for_path(path: str | None):
     """
     Optional helper to remove all cache entries for a given path
     regardless of metadata variation.

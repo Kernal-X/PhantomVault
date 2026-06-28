@@ -206,12 +206,12 @@ class SOCLogger:
             if key in data:
                 payload[key] = data[key]
 
-    def _ml_severity(self, score: int) -> str:
+    def _ml_severity(self, score: int) -> int:
         if score <= 1:
-            return "low"
+            return 0
         if score <= 3:
-            return "medium"
-        return "high"
+            return 1
+        return 2
 
     def _reason_blob(self, detection: Dict) -> str:
         parts = []
@@ -290,6 +290,7 @@ class SOCLogger:
             "timestamp": ts_str,
             "system_score": score,
             "severity": self._ml_severity(score),
+            "severity_label": detection.get("severity", "none"),
             "behavioral_anomaly_flag": behavioral_anomaly_flag,
             "external_connection_flag": external_connection_flag,
             "unknown_process_flag": unknown_process_flag,

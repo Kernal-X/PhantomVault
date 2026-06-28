@@ -7,7 +7,7 @@ class StreamingAggregator:
     def __init__(self, threshold=1.5, decay=0.9,max_events=100):
         self.threshold = threshold
         self.decay = decay
-        self.max_events = max_events    
+        self.max_events = max_events
 
         self.aggregator_score = 0.0
         self.event_queue = []
@@ -27,7 +27,7 @@ class StreamingAggregator:
         event_copy["timestamp"] = time.time()
 
         # store event
-        self.event_queue.append(event)
+        self.event_queue.append(event_copy)
 
         # update score
         self.update_score(event["risk_score"])

@@ -1,15 +1,12 @@
-# test_pipeline.py
 import sys
 import os
 
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
 
-# test_pipeline.py
-
-
 from agents.deployment.deployment_agent import DeploymentManager
 from core.interception_layer import InterceptionLayer
 from agents.generation.generation_agent import GenerationAgent
+from core.path_resolver import normalize_path
 
 
 def get_mock_strategy_output():
@@ -17,7 +14,7 @@ def get_mock_strategy_output():
         "execution_plan": {
             "files_to_create": [
                 {
-                    "absolute_path": "/shared/finance/payroll_march.csv",
+                    "absolute_path": "C:\\shared\\finance\\payroll_march.csv",
                     "file_type": "csv",
                     "columns": ["employee_id", "name", "salary", "department", "email"],
                     "content_profile": "salary_data",
@@ -33,11 +30,11 @@ def get_mock_strategy_output():
                     "size_bytes_target": 800
                 },
                 {
-                    "absolute_path": "/shared/logs/security_audit.log",
+                    "absolute_path": "D:\\shared\\logs\\security_audit.log",
                     "file_type": "log",
                     "columns": [],
                     "content_profile": "logs",
-                    "realism": "medium",
+                    "realism": "high",
                     "size_bytes_target": 5000
                 }
             ]
@@ -53,25 +50,25 @@ def get_mock_analysis(intent, stage, confidence):
     }
 
 
-def run_test():
+def simulate_attacker_access(interception, deployment_state):
 
-    print("\nRunning PRE-GENERATION PIPELINE\n")
+    print("\nSimulating Attacker Behavior\n")
 
-    # 1. Deployment
-    deployment_manager = DeploymentManager()
-    strategy_output = get_mock_strategy_output()
-    deployment_state = deployment_manager.deploy(strategy_output)
+    # Simulated attacker actions (mixed paths)
+    attacker_requests = [
+        "D:\\shared\\logs\\security_audit.log",   # suspicious target
+        "C:\\shared\\finance\\payroll_march.csv", # sensitive data
+        "/shared/admin/backup_credentials.txt",   # credentials
+        "D:\\shared\\public\\readme.txt"          # non-decoy (real)
+    ]
 
-    # 2. Interception + Generation
-    generation_agent = GenerationAgent()
-    interception = InterceptionLayer(generation_agent=generation_agent)
-
-    # Force execution immediately
     analysis = get_mock_analysis("data_exfiltration", "collection", 0.9)
 
-    generated_files = {}
+    for path in attacker_requests:
 
-    for path in deployment_state["decoy_registry"]:
+        print("\n" + "=" * 80)
+        print(f"ATTACKER REQUEST: {path}")
+        print("NORMALIZED PATH:", normalize_path(path))
 
         input_data = {
             "path": path,
@@ -81,30 +78,33 @@ def run_test():
 
         result = interception.handle(input_data)
 
-        generated_files[path] = result
+        print("\nOUTPUT:\n")
+        print(result)
 
-    print("\nDECOY REGISTRY:")
-    for k, v in deployment_state["decoy_registry"].items():
-        print(k, "->", v["file_type"])
-
-    # 3. Print results
-    print("\nGENERATED FILES:\n")
-    print("\nDecoy Environment Path:")
-    print(os.path.abspath("./decoy_env"))
-
-    for path, content in generated_files.items():
-        print(f"\n=== {path} ===")
-        print("OUTPUT:")
-        print(content)
-
-        print("\n--- DEBUG INFO ---")
-        if "[REAL" in content:
+        print("\n--- DEBUG ---")
+        if "[REAL" in result:
             print("SOURCE: REAL FILE")
-        elif "truncated" in content or "User=" in content:
-            print("SOURCE: GENERATED (FAKE)")
         else:
-            print("SOURCE: UNKNOWN")
-        print("-" * 50)
+            print("SOURCE: DECOY / GENERATED")
+
+        print("=" * 80)
+
+
+def run_test():
+
+    print("\nRunning ATTACKER-SIMULATION PIPELINE\n")
+
+    # 1. Deployment (setup environment)
+    deployment_manager = DeploymentManager()
+    strategy_output = get_mock_strategy_output()
+    deployment_state = deployment_manager.deploy(strategy_output)
+
+    # 2. Setup interception + generation
+    generation_agent = GenerationAgent()
+    interception = InterceptionLayer(generation_agent=generation_agent)
+
+    # 3. Simulate attacker
+    simulate_attacker_access(interception, deployment_state)
 
 
 if __name__ == "__main__":

@@ -1,7 +1,7 @@
 import os
 import time
 import threading
-from typing import Dict, List
+from typing import Dict, Iterable, List
 
 from watchdog.events import FileSystemEventHandler
 from watchdog.observers import Observer
@@ -26,8 +26,8 @@ class _BufferedFileEventHandler(FileSystemEventHandler):
 
 
 class FileCollector:
-    def __init__(self, path: str = ".", recursive: bool = True):
-        self.path = os.path.abspath(path)
+    def __init__(self, path: str | Iterable[str] = ".", recursive: bool = True):
+        self.paths = self._normalize_paths(path)
         self.recursive = recursive
         self._events: List[Dict] = []
         self._lock = threading.Lock()
@@ -51,7 +51,17 @@ class FileCollector:
     def start(self):
         if self._started:
             return
-        self._observer.schedule(self._handler, self.path, recursive=self.recursive)
+        scheduled = 0
+        for watch_path in self.paths:
+            if not os.path.isdir(watch_path):
+                print(f"[FILE COLLECTOR] Skipping missing watch path: {watch_path}")
+                continue
+            self._observer.schedule(self._handler, watch_path, recursive=self.recursive)
+            scheduled += 1
+
+        if scheduled == 0:
+            raise ValueError("FileCollector could not schedule any valid watch paths.")
+
         self._observer.start()
         self._started = True
 
@@ -67,3 +77,22 @@ class FileCollector:
             events = self._events[:]
             self._events.clear()
         return events
+
+    def _normalize_paths(self, value: str | Iterable[str]) -> List[str]:
+        if isinstance(value, str):
+            raw_paths = [value]
+        else:
+            raw_paths = list(value or [])
+
+        normalized: List[str] = []
+        for item in raw_paths:
+            if not item:
+                continue
+            expanded = os.path.expandvars(os.path.expanduser(str(item)))
+            normalized.append(os.path.abspath(expanded))
+
+        if not normalized:
+            normalized.append(os.path.abspath("."))
+
+        # Preserve order while deduplicating.
+        return list(dict.fromkeys(normalized))

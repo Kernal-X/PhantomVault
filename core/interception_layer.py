@@ -1,12 +1,14 @@
 # core/interception_layer.py
 
 from core.decision_engine import decide_action
+from core.path_resolver import normalize_path, resolve_path
+import os
 
 class InterceptionLayer:
 
     def __init__(self, generation_agent=None):
         self.generation_agent = generation_agent
-        self.SUPPORTED_TYPES = ["csv", "txt", "log", "json", "env"]
+        self.SUPPORTED_TYPES = ["csv", "txt", "log", "json", "env","sql"]
 
     # ------------------------
     # MAIN ENTRY
@@ -14,7 +16,8 @@ class InterceptionLayer:
 
     def handle(self, input_data):
 
-        path = input_data.get("path")
+        original_path = input_data.get("path")
+        path = normalize_path(original_path)
         analysis = input_data.get("analysis", {})
         deployment = input_data.get("deployment", {})
 
@@ -25,7 +28,7 @@ class InterceptionLayer:
         # 1️⃣ If no decoy → real
         # ------------------------
         if path not in registry:
-            return self._read_real(path, reason="no_decoy")
+            return self._read_real(original_path, reason="no_decoy")
 
         metadata = registry[path]
         file_type = metadata.get("file_type", "txt")
@@ -46,39 +49,62 @@ class InterceptionLayer:
             analysis,
             self.SUPPORTED_TYPES
         )
+        print("DECISION:", action)
 
         # ------------------------
         # 4️⃣ Execute action
         # ------------------------
         if action == "real":
-            return self._read_real(path, reason="decision_real")
+            return self._read_real(original_path, reason="decision_real")
 
         if action == "partial":
-            real = self._read_real(path)
-            fake = self._generate_fake(path, metadata, deployment)
+            real = self._read_real(original_path)
+            fake = self._generate_fake(path, metadata, deployment,analysis)
             return self._blend(real, fake)
 
         if action == "fake":
-            return self._generate_fake(path, metadata, deployment)
+            return self._generate_fake(path, metadata, deployment,analysis)
 
-        return self._read_real(path, reason="fallback")
+        return self._read_real(original_path, reason="fallback")
 
     # ------------------------
     # HELPERS
     # ------------------------
 
-    def _generate_fake(self, path, metadata, deployment):
+    def _generate_fake(self, path, metadata, deployment,analysis):
         if not self.generation_agent:
             return "[ERROR] No generation agent available"
 
-        result=self.generation_agent.generate(path, metadata)
+        enriched_metadata = {
+            **metadata,
+            "analysis": analysis   # 🔥 inject here
+        }
+        result=self.generation_agent.generate(path, enriched_metadata)
 
         return result['content']
 
     def _read_real(self, path, reason=None):
+        real_path = path
+
+        if not os.path.exists(real_path):
+            return f"[REAL:missing] {path}"
+
+        content = None
+        for enc in ["utf-8", "utf-16"]:
+            try:
+                with open(real_path, "r", encoding=enc) as f:
+                    content = f.read()
+                    break
+            except:
+                continue
+
+        if content is None:
+            return f"[REAL:binary_or_unsupported] {path}"
+
         if reason:
-            return f"[REAL:{reason}] {path}"
-        return f"[REAL] {path}"
+            return f"[REAL:{reason}]\n{content}"
+
+        return content
 
     def _blend(self, real, fake):
         return f"{real}\n---PARTIAL-DECEPTION---\n{fake}"

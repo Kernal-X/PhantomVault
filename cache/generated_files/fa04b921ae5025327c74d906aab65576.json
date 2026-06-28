@@ -1,5 +1,5 @@
 {
-  "content": "APP_ENV=production\nAPP_NAME=phoenix-service\nDB_HOST=10.14.221.48\nDB_PORT=5432\nDB_NAME=phoenix_db\nDB_USER=internal_user\nDB_PASSWORD=Internal@992#eJ9\nJWT_SECRET=jwt_144510_phoenix_2023\nAPI_KEY=sk_live_51M4V9R50099209\nAWS_ACCESS_KEY_ID=AKIAIOSFODNN7EXAMPLE\nSERVICE_OWNER=priya.malhotra@company.com\nDEBUG=false",
+  "content": "APP_ENV=production\nAPP_NAME=nimbus-service\nDB_HOST=10.6.194.206\nDB_PORT=5432\nDB_NAME=nimbus_db\nDB_USER=svc_nimbus_backup\nDB_PASSWORD=P@ssw0rd_755\nJWT_SECRET=jwt_644327_nimbus_2024\nAPI_KEY=sk_live_51nBp65421716\nAWS_ACCESS_KEY_ID=AKIAIOSF7YGE5GEOXLP\nSERVICE_OWNER=karan.menon@company.com\nDEBUG=false",
   "schema": [
     "APP_ENV",
     "APP_NAME",
@@ -23,6 +23,6 @@
     "use_llm_realism": true,
     "columns": []
   },
-  "cached_at": "2026-03-30T18:41:10.447262+00:00",
+  "cached_at": "2026-03-31T08:44:13.278682+00:00",
   "cache_version": "v2"
 }

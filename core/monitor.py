@@ -6,9 +6,9 @@ from collectors.network_collector import NetworkCollector
 
 
 class Monitor:
-    def __init__(self, interval=1):
+    def __init__(self, interval=1, file_watch_paths=None, file_watch_recursive=True):
         self.process_collector = ProcessCollector(interval=interval)
-        self.file_collector = FileCollector()
+        self.file_collector = FileCollector(path=file_watch_paths or ".", recursive=file_watch_recursive)
         self.network_collector = NetworkCollector()
 
     def collect(self):

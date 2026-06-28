@@ -728,6 +728,7 @@ def generate_credentials(metadata):
 # ----------------------------
 
 def generate_logs(metadata):
+    print("🔥 REAL generate_logs EXECUTED")
     context = load_global_context()
     size_bytes = parse_size_to_bytes(metadata.get("size", "15kb"))
     row_count = min(5000, estimate_row_count(size_bytes, "log", 4))
